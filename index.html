@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Absensi Manual</title>
-
+<title>Sistem Rapat & Absensi MPK</title>
 <style>
 * {
     box-sizing: border-box;
@@ -44,14 +42,37 @@ body {
     opacity: 0.9;
 }
 
-/* CONTROL */
+/* TAB NAVIGATION */
+.tab-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #4b5563;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: 0.2s;
+}
+
+.tab-btn.aktif {
+    background: #2563eb;
+    color: white;
+}
+
+/* CONTROL / INFO RAPAT */
 .control {
     background: white;
     padding: 18px;
     border-radius: 15px;
     margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,7 +80,13 @@ body {
     flex-wrap: wrap;
 }
 
-.tanggal {
+.tanggal-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tanggal-input-group {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -69,6 +96,37 @@ input[type="date"] {
     padding: 9px 12px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
+}
+
+/* INDIKATOR RAPAT DI TENGAH */
+.info-rapat-badge {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-rapat-badge span {
+    background: #4f46e5;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+/* TAB CONTENT */
+.tab-content {
+    display: none;
+}
+
+.tab-content.aktif {
+    display: block;
 }
 
 /* STATISTIK */
@@ -97,23 +155,12 @@ input[type="date"] {
     font-size: 25px;
 }
 
-.hadir {
-    color: #16a34a;
-}
+.hadir { color: #16a34a; }
+.izin { color: #ca8a04; }
+.sakit { color: #2563eb; }
+.alpa { color: #dc2626; }
 
-.izin {
-    color: #ca8a04;
-}
-
-.sakit {
-    color: #2563eb;
-}
-
-.alpa {
-    color: #dc2626;
-}
-
-/* DAFTAR */
+/* DAFTAR ABSENSI */
 .daftar {
     background: white;
     border-radius: 15px;
@@ -153,11 +200,9 @@ input[type="date"] {
     border-radius: 50%;
     background: #e0e7ff;
     color: #3730a3;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-weight: bold;
 }
 
@@ -171,7 +216,6 @@ input[type="date"] {
     color: #6b7280;
 }
 
-/* SELECT STATUS */
 select {
     padding: 9px 13px;
     border-radius: 9px;
@@ -181,6 +225,41 @@ select {
     min-width: 120px;
 }
 
+/* CATATAN / NOTULEN RAPAT */
+.catatan-container {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-grup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-grup label {
+    font-weight: bold;
+    color: #374151;
+}
+
+.form-grup input, .form-grup textarea {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-grup textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
 /* BUTTON */
 .tombol {
     margin-top: 20px;
@@ -188,7 +267,7 @@ select {
     justify-content: flex-end;
 }
 
-button {
+button.btn-simpan {
     background: #2563eb;
     color: white;
     border: none;
@@ -198,28 +277,16 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button.btn-simpan:hover {
     background: #1d4ed8;
 }
 
-/* RESPONSIVE */
 @media (max-width: 700px) {
-    body {
-        padding: 12px;
-    }
-
-    .statistik {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .orang {
-        align-items: flex-start;
-        gap: 12px;
-    }
-
-    select {
-        min-width: 105px;
-    }
+    body { padding: 12px; }
+    .statistik { grid-template-columns: repeat(2, 1fr); }
+    .orang { align-items: flex-start; gap: 12px; }
+    select { min-width: 105px; }
+    .control { flex-direction: column; align-items: stretch; }
 }
 </style>
 </head>
@@ -230,118 +297,154 @@ button:hover {
 
     <!-- HEADER -->
     <div class="header">
-        <h1>📋 Absensi Manual</h1>
-        <p>Sistem Rekap Kehadiran Rapat MPK</p>
+        <h1>📋 Sistem Rapat & Absensi MPK</h1>
+        <p>Pencatatan Kehadiran Anggota & Notulen Hasil Rapat</p>
     </div>
 
-    <!-- TANGGAL -->
+    <!-- TAB NAVIGASI -->
+    <div class="tab-nav">
+        <button class="tab-btn aktif" onclick="pindahTab('absensi')">👥 Absensi Rapat</button>
+        <button class="tab-btn" onclick="pindahTab('catatan')">📝 Hasil & Masalah Rapat</button>
+    </div>
+
+    <!-- KONTROL TANGGAL & INFO RAPAT -->
     <div class="control">
-        <div class="tanggal">
-            <strong>Tanggal:</strong>
-            <input type="date" id="tanggal">
+        <div class="tanggal-wrapper">
+            <strong>Tanggal Rapat:</strong>
+            <div class="tanggal-input-group">
+                <input type="date" id="tanggal">
+            </div>
         </div>
+
+        <!-- INFO / NAMA RAPAT DI TENGAH -->
+        <div class="info-rapat-badge" id="badgeRapat">
+            <span>Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
+        </div>
+
         <div>
-            <strong>Mode:</strong> Absensi Manual
+            <strong>Status:</strong> <span id="statusMode" style="color: #2563eb; font-weight: bold;">Mode Absensi</span>
         </div>
     </div>
 
-    <!-- STATISTIK -->
-    <div class="statistik">
-        <div class="stat">
-            <span>HADIR</span>
-            <strong class="hadir" id="jumlahHadir">0</strong>
+
+    <!-- ================= TAB 1: ABSENSI ================= -->
+    <div id="tabAbsensi" class="tab-content aktif">
+        
+        <!-- STATISTIK -->
+        <div class="statistik">
+            <div class="stat">
+                <span>HADIR</span>
+                <strong class="hadir" id="jumlahHadir">0</strong>
+            </div>
+            <div class="stat">
+                <span>IZIN</span>
+                <strong class="izin" id="jumlahIzin">0</strong>
+            </div>
+            <div class="stat">
+                <span>SAKIT</span>
+                <strong class="sakit" id="jumlahSakit">0</strong>
+            </div>
+            <div class="stat">
+                <span>ALPA</span>
+                <strong class="alpa" id="jumlahAlpa">0</strong>
+            </div>
         </div>
-        <div class="stat">
-            <span>IZIN</span>
-            <strong class="izin" id="jumlahIzin">0</strong>
+
+        <!-- DAFTAR ANGGOTA -->
+        <div class="daftar">
+            <div class="judul-daftar">Daftar Kehadiran Anggota MPK</div>
+
+            <!-- ANGGOTA 01 -->
+            <div class="orang">
+                <div class="identitas">
+                    <div class="nomor">01</div>
+                    <div>
+                        <div class="nama">Giyas Nabil Qurisqi</div>
+                        <div class="posisi">Ketua MPK</div>
+                    </div>
+                </div>
+                <select class="status">
+                    <option value="Hadir" selected>Hadir</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Alpa">Alpa</option>
+                </select>
+            </div>
+
+            <!-- ANGGOTA 02 -->
+            <div class="orang">
+                <div class="identitas">
+                    <div class="nomor">02</div>
+                    <div>
+                        <div class="nama">Nama Anggota 02</div>
+                        <div class="posisi">Wakil Ketua / Anggota</div>
+                    </div>
+                </div>
+                <select class="status">
+                    <option value="Hadir" selected>Hadir</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Alpa">Alpa</option>
+                </select>
+            </div>
+
+            <!-- ANGGOTA 03 -->
+            <div class="orang">
+                <div class="identitas">
+                    <div class="nomor">03</div>
+                    <div>
+                        <div class="nama">Nama Anggota 03</div>
+                        <div class="posisi">Sekretaris / Anggota</div>
+                    </div>
+                </div>
+                <select class="status">
+                    <option value="Hadir" selected>Hadir</option>
+                    <option value="Izin">Izin</option>
+                    <option value="Sakit">Sakit</option>
+                    <option value="Alpa">Alpa</option>
+                </select>
+            </div>
+            <!-- Silakan duplikat blok `.orang` di atas untuk menambah anggota lainnya -->
         </div>
-        <div class="stat">
-            <span>SAKIT</span>
-            <strong class="sakit" id="jumlahSakit">0</strong>
-        </div>
-        <div class="stat">
-            <span>ALPA</span>
-            <strong class="alpa" id="jumlahAlpa">0</strong>
+
+        <div class="tombol">
+            <button class="btn-simpan" onclick="simpanAbsensi()">💾 Simpan Absensi</button>
         </div>
     </div>
 
-    <!-- DAFTAR -->
-    <div class="daftar">
-        <div class="judul-daftar">
-            Daftar Kehadiran
-        </div>
 
-        <!-- Giyas Nabil Qurisqi -->
-        <div class="orang">
-            <div class="identitas">
-                <div class="nomor">01</div>
-                <div>
-                    <div class="nama">Giyas Nabil Qurisqi</div>
-                    <div class="posisi">Ketua MPK</div>
-                </div>
+    <!-- ================= TAB 2: CATATAN / HASIL RAPAT ================= -->
+    <div id="tabCatatan" class="tab-content">
+        <div class="catatan-container">
+            <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
+            
+            <div class="form-grup">
+                <label for="inputJudulRapat">Judul / Topik Rapat (Cth: Rapat Hari Santri):</label>
+                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama/judul agenda rapat pada tanggal ini...">
             </div>
-            <select class="status">
-                <option value="Hadir" selected>Hadir</option>
-                <option value="Izin">Izin</option>
-                <option value="Sakit">Sakit</option>
-                <option value="Alpa">Alpa</option>
-            </select>
-        </div>
 
-        <!-- Mutiara Khoirunnisa -->
-        <div class="orang">
-            <div class="identitas">
-                <div class="nomor">02</div>
-                <div>
-                    <div class="nama">Mutiara Khoirunnisa</div>
-                    <div class="posisi">Wakil Ketua MPK</div>
-                </div>
+            <div class="form-grup">
+                <label for="inputHasilRapat">Hasil Keputusan / Pembahasan Rapat:</label>
+                <textarea id="inputHasilRapat" placeholder="Tuliskan poin-poin keputusan atau hasil rapat di sini..."></textarea>
             </div>
-            <select class="status">
-                <option value="Hadir" selected>Hadir</option>
-                <option value="Izin">Izin</option>
-                <option value="Sakit">Sakit</option>
-                <option value="Alpa">Alpa</option>
-            </select>
-        </div>
 
-        <!-- Alifia Nabila Putri -->
-        <div class="orang">
-            <div class="identitas">
-                <div class="nomor">Alifia Nabila Putri</div>
-                <div>
-                    <div class="Alifia Nabila Putri</div>
-                    <div class="posisi">Sekretaris 1</div>
-                </div>
+            <div class="form-grup">
+                <label for="inputMasalahRapat">Kendala / Masalah yang Dibahas:</label>
+                <textarea id="inputMasalahRapat" placeholder="Tuliskan kendala, masalah, atau evaluasi yang muncul saat rapat..."></textarea>
             </div>
-            <select class="status">
-                <option value="Hadir" selected>Hadir</option>
-                <option value="Izin">Izin</option>
-                <option value="Sakit">Sakit</option>
-                <option value="Alpa">Alpa</option>
-            </select>
+
+            <div class="tombol" style="margin-top: 0;">
+                <button class="btn-simpan" onclick="simpanCatatanRapat()">💾 Simpan Catatan Rapat</button>
+            </div>
         </div>
-
-        <!-- 
-        =====================================================
-        SILAHKAN COPY BLOK DI ATAS UNTUK ORANG 04 SAMPAI 50
-        =====================================================
-        -->
-
-    </div>
-
-    <!-- BUTTON -->
-    <div class="tombol">
-        <button onclick="simpanAbsensi()">
-            💾 Simpan Absensi
-        </button>
     </div>
 
 </div>
 
+
 <script>
 /* =========================
-   TANGGAL OTOMATIS
+   PENGATURAN TANGGAL & TAB
 ========================= */
 const tanggalInput = document.getElementById("tanggal");
 
@@ -352,17 +455,28 @@ const hari = String(hariIni.getDate()).padStart(2, "0");
 
 tanggalInput.value = `${tahun}-${bulan}-${hari}`;
 
+function pindahTab(namaTab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('aktif'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('aktif'));
+
+    if (namaTab === 'absensi') {
+        document.getElementById('tabAbsensi').classList.add('aktif');
+        document.querySelectorAll('.tab-btn')[0].classList.add('aktif');
+        document.getElementById('statusMode').textContent = "Mode Absensi";
+    } else {
+        document.getElementById('tabCatatan').classList.add('aktif');
+        document.querySelectorAll('.tab-btn')[1].classList.add('aktif');
+        document.getElementById('statusMode').textContent = "Mode Notulen Rapat";
+    }
+}
+
 
 /* =========================
-   UPDATE JUMLAH STATISTIK
+   UPDATE STATISTIK ABSENSI
 ========================= */
 function updateJumlah() {
     const semuaStatus = document.querySelectorAll(".status");
-
-    let hadir = 0;
-    let izin = 0;
-    let sakit = 0;
-    let alpa = 0;
+    let hadir = 0, izin = 0, sakit = 0, alpa = 0;
 
     semuaStatus.forEach(function(status) {
         if (status.value === "Hadir") hadir++;
@@ -381,75 +495,97 @@ function updateJumlah() {
 /* =========================
    MUAT DATA BERDASARKAN TANGGAL
 ========================= */
-function muatAbsensi() {
-    const tanggalPilih = tanggalInput.value;
-    const dataSimpan = localStorage.getItem("absensi_" + tanggalPilih);
+function muatData() {
+    const tgl = tanggalInput.value;
+    
+    // 1. Muat Absensi
+    const dataAbsen = localStorage.getItem("absensi_" + tgl);
     const semuaStatus = document.querySelectorAll(".status");
-
-    if (dataSimpan) {
-        // Jika data pada tanggal tersebut sudah pernah disimpan
-        const dataParsed = JSON.parse(dataSimpan);
-        semuaStatus.forEach(function(status, index) {
-            if (dataParsed[index]) {
-                status.value = dataParsed[index].status;
-            }
+    if (dataAbsen) {
+        const parsed = JSON.parse(dataAbsen);
+        semuaStatus.forEach((status, idx) => {
+            if (parsed[idx]) status.value = parsed[idx].status;
         });
     } else {
-        // Jika belum ada data tersimpan, defaultkan ke "Hadir" semua
-        semuaStatus.forEach(function(status) {
-            status.value = "Hadir";
-        });
+        semuaStatus.forEach(status => status.value = "Hadir");
     }
-
     updateJumlah();
+
+    // 2. Muat Catatan Rapat & Update Badge Header
+    const dataCatatan = localStorage.getItem("catatan_" + tgl);
+    const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const inputJudul = document.getElementById("inputJudulRapat");
+    const inputHasil = document.getElementById("inputHasilRapat");
+    const inputMasalah = document.getElementById("inputMasalahRapat");
+
+    if (dataCatatan) {
+        const parsedCatatan = JSON.parse(dataCatatan);
+        inputJudul.value = parsedCatatan.judul || "";
+        inputHasil.value = parsedCatatan.hasil || "";
+        inputMasalah.value = parsedCatatan.masalah || "";
+        
+        if (parsedCatatan.judul.trim() !== "") {
+            teksJudulRapat.textContent = parsedCatatan.judul;
+        } else {
+            teksJudulRapat.textContent = "Rapat Terjadwal (Tanpa Judul)";
+        }
+    } else {
+        inputJudul.value = "";
+        inputHasil.value = "";
+        inputMasalah.value = "";
+        teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
+    }
 }
 
 
 /* =========================
-   KETIKA TANGGAL DIGANTI
-========================= */
-tanggalInput.addEventListener("change", muatAbsensi);
-
-
-/* =========================
-   KETIKA STATUS DIUBAH
-========================= */
-document.querySelectorAll(".status").forEach(function(status) {
-    status.addEventListener("change", updateJumlah);
-});
-
-
-/* =========================
-   SIMPAN ABSENSI
+   SIMPAN DATA
 ========================= */
 function simpanAbsensi() {
-    const tanggalPilih = tanggalInput.value;
+    const tgl = tanggalInput.value;
     const semuaStatus = document.querySelectorAll(".status");
     const data = [];
 
-    semuaStatus.forEach(function(status) {
+    semuaStatus.forEach(status => {
         const orang = status.closest(".orang");
-        const nama = orang.querySelector(".nama").textContent.trim();
-        const posisi = orang.querySelector(".posisi").textContent.trim();
-
         data.push({
-            nama: nama,
-            posisi: posisi,
+            nama: orang.querySelector(".nama").textContent.trim(),
+            posisi: orang.querySelector(".posisi").textContent.trim(),
             status: status.value
         });
     });
 
-    // Simpan ke localStorage dengan kunci unik berdasarkan tanggal yang dipilih
-    localStorage.setItem("absensi_" + tanggalPilih, JSON.stringify(data));
+    localStorage.setItem("absensi_" + tgl, JSON.stringify(data));
+    alert("Absensi tanggal " + tgl + " berhasil disimpan!");
+}
 
-    alert("Absensi tanggal " + tanggalPilih + " berhasil disimpan! 💾");
+function simpanCatatanRapat() {
+    const tgl = tanggalInput.value;
+    const judul = document.getElementById("inputJudulRapat").value;
+    const hasil = document.getElementById("inputHasilRapat").value;
+    const masalah = document.getElementById("inputMasalahRapat").value;
+
+    const dataCatatan = { judul, hasil, masalah };
+    localStorage.setItem("catatan_" + tgl, JSON.stringify(dataCatatan));
+
+    // Update langsung badge di atas
+    document.getElementById("teksJudulRapat").textContent = judul.trim() !== "" ? judul : "Tidak ada agenda rapat khusus";
+    
+    alert("Catatan & hasil rapat tanggal " + tgl + " berhasil disimpan! 📝");
 }
 
 
 /* =========================
-   PANGGIL SAAT HALAMAN DIBUKA
+   EVENT LISTENER
 ========================= */
-muatAbsensi();
+tanggalInput.addEventListener("change", muatData);
+
+document.querySelectorAll(".status").forEach(status => {
+    status.addEventListener("change", updateJumlah);
+});
+
+// Panggil saat pertama kali load
+muatData();
 </script>
 
 </body>
