@@ -1,19 +1,209 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Absensi</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Karyawan</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .header {
+            background: #1e3a8a;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(0,0,0,0.1);
+        }
+
+        .nama {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .posisi {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .absen {
+            display: flex;
+            gap: 35px;
+            text-align: center;
+        }
+
+        .label {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .jam {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .masuk {
+            color: #16a34a;
+        }
+
+        .pulang {
+            color: #dc2626;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .absen {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <h1>ABSENSI</h1>
+<div class="container">
 
-    <h2>Nama Orang</h2>
+    <div class="header">
+        <h1>📋 ABSENSI KARYAWAN</h1>
+        <p>Rekap Absensi Harian</p>
+    </div>
 
-    <p>Absen Masuk</p>
-    <p>07:00</p>
 
-    <p>Absen Pulang</p>
-    <p>17:00</p>
+    <!-- 01 -->
+    <div class="card">
+        <div>
+            <div class="nama">Nama Orang 01</div>
+            <div class="posisi">Posisi / Jabatan</div>
+        </div>
+
+        <div class="absen">
+            <div>
+                <div class="label">ABSEN MASUK</div>
+                <div class="jam masuk">07:00</div>
+            </div>
+
+            <div>
+                <div class="label">ABSEN PULANG</div>
+                <div class="jam pulang">17:00</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 02 -->
+    <div class="card">
+        <div>
+            <div class="nama">Nama Orang 02</div>
+            <div class="posisi">Posisi / Jabatan</div>
+        </div>
+
+        <div class="absen">
+            <div>
+                <div class="label">ABSEN MASUK</div>
+                <div class="jam masuk">07:00</div>
+            </div>
+            <div>
+                <div class="label">ABSEN PULANG</div>
+                <div class="jam pulang">17:00</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 03 - 50 -->
+    <div class="card"><div><div class="nama">Nama Orang 03</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 04</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 05</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 06</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 07</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 08</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 09</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 10</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 11</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 12</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 13</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 14</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 15</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 16</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 17</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 18</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 19</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <div class="card"><div><div class="nama">Nama Orang 20</div><div class="posisi">Posisi / Jabatan</div></div><div class="absen"><div><div class="label">ABSEN MASUK</div><div class="jam masuk">07:00</div></div><div><div class="label">ABSEN PULANG</div><div class="jam pulang">17:00</div></div></div></div>
+
+    <!-- Tambahkan orang 21-50 dengan format yang sama -->
+
+</div>
 
 </body>
 </html>
