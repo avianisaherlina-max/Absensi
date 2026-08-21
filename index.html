@@ -7,7 +7,6 @@
 <title>Absensi Manual</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -27,7 +26,6 @@ body {
 }
 
 /* HEADER */
-
 .header {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
@@ -47,7 +45,6 @@ body {
 }
 
 /* CONTROL */
-
 .control {
     background: white;
     padding: 18px;
@@ -75,7 +72,6 @@ input[type="date"] {
 }
 
 /* STATISTIK */
-
 .statistik {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -118,7 +114,6 @@ input[type="date"] {
 }
 
 /* DAFTAR */
-
 .daftar {
     background: white;
     border-radius: 15px;
@@ -177,7 +172,6 @@ input[type="date"] {
 }
 
 /* SELECT STATUS */
-
 select {
     padding: 9px 13px;
     border-radius: 9px;
@@ -188,7 +182,6 @@ select {
 }
 
 /* BUTTON */
-
 .tombol {
     margin-top: 20px;
     display: flex;
@@ -210,9 +203,7 @@ button:hover {
 }
 
 /* RESPONSIVE */
-
 @media (max-width: 700px) {
-
     body {
         padding: 12px;
     }
@@ -229,405 +220,236 @@ button:hover {
     select {
         min-width: 105px;
     }
-
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div class="container">
 
     <!-- HEADER -->
-
     <div class="header">
-
         <h1>📋 Absensi Manual</h1>
-
-        <p>
-            Sistem Rekap Kehadiran Karyawan / PKL
-        </p>
-
+        <p>Sistem Rekap Kehadiran Karyawan / PKL</p>
     </div>
-
 
     <!-- TANGGAL -->
-
     <div class="control">
-
         <div class="tanggal">
-
             <strong>Tanggal:</strong>
-
-            <input
-                type="date"
-                id="tanggal"
-            >
-
+            <input type="date" id="tanggal">
         </div>
-
         <div>
-            <strong>Mode:</strong>
-            Absensi Manual
+            <strong>Mode:</strong> Absensi Manual
         </div>
-
     </div>
-
 
     <!-- STATISTIK -->
-
     <div class="statistik">
-
         <div class="stat">
             <span>HADIR</span>
-            <strong class="hadir" id="jumlahHadir">
-                50
-            </strong>
+            <strong class="hadir" id="jumlahHadir">0</strong>
         </div>
-
         <div class="stat">
             <span>IZIN</span>
-            <strong class="izin" id="jumlahIzin">
-                0
-            </strong>
+            <strong class="izin" id="jumlahIzin">0</strong>
         </div>
-
         <div class="stat">
             <span>SAKIT</span>
-            <strong class="sakit" id="jumlahSakit">
-                0
-            </strong>
+            <strong class="sakit" id="jumlahSakit">0</strong>
         </div>
-
         <div class="stat">
             <span>ALPA</span>
-            <strong class="alpa" id="jumlahAlpa">
-                0
-            </strong>
+            <strong class="alpa" id="jumlahAlpa">0</strong>
         </div>
-
     </div>
 
-
     <!-- DAFTAR -->
-
     <div class="daftar">
-
         <div class="judul-daftar">
             Daftar Kehadiran
         </div>
 
-
         <!-- ORANG 01 -->
-
         <div class="orang">
-
             <div class="identitas">
-
                 <div class="nomor">01</div>
-
                 <div>
-
-                    <div class="nama">
-                        Nama Orang 01
-                    </div>
-
-                    <div class="posisi">
-                        Posisi / Jabatan
-                    </div>
-
+                    <div class="nama">Nama Orang 01</div>
+                    <div class="posisi">Posisi / Jabatan</div>
                 </div>
-
             </div>
-
-
             <select class="status">
-
-                <option value="Hadir" selected>
-                    Hadir
-                </option>
-
-                <option value="Izin">
-                    Izin
-                </option>
-
-                <option value="Sakit">
-                    Sakit
-                </option>
-
-                <option value="Alpa">
-                    Alpa
-                </option>
-
+                <option value="Hadir" selected>Hadir</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+                <option value="Alpa">Alpa</option>
             </select>
-
         </div>
-
 
         <!-- ORANG 02 -->
-
         <div class="orang">
-
             <div class="identitas">
-
                 <div class="nomor">02</div>
-
                 <div>
-
-                    <div class="nama">
-                        Nama Orang 02
-                    </div>
-
-                    <div class="posisi">
-                        Posisi / Jabatan
-                    </div>
-
+                    <div class="nama">Nama Orang 02</div>
+                    <div class="posisi">Posisi / Jabatan</div>
                 </div>
-
             </div>
-
-
             <select class="status">
-
-                <option value="Hadir" selected>
-                    Hadir
-                </option>
-
-                <option value="Izin">
-                    Izin
-                </option>
-
-                <option value="Sakit">
-                    Sakit
-                </option>
-
-                <option value="Alpa">
-                    Alpa
-                </option>
-
+                <option value="Hadir" selected>Hadir</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+                <option value="Alpa">Alpa</option>
             </select>
-
         </div>
-
 
         <!-- ORANG 03 -->
-
         <div class="orang">
-
             <div class="identitas">
-
                 <div class="nomor">03</div>
-
                 <div>
-
-                    <div class="nama">
-                        Nama Orang 03
-                    </div>
-
-                    <div class="posisi">
-                        Posisi / Jabatan
-                    </div>
-
+                    <div class="nama">Nama Orang 03</div>
+                    <div class="posisi">Posisi / Jabatan</div>
                 </div>
-
             </div>
-
-
             <select class="status">
-
-                <option value="Hadir" selected>
-                    Hadir
-                </option>
-
-                <option value="Izin">
-                    Izin
-                </option>
-
-                <option value="Sakit">
-                    Sakit
-                </option>
-
-                <option value="Alpa">
-                    Alpa
-                </option>
-
+                <option value="Hadir" selected>Hadir</option>
+                <option value="Izin">Izin</option>
+                <option value="Sakit">Sakit</option>
+                <option value="Alpa">Alpa</option>
             </select>
-
         </div>
 
-
-        <!--
+        <!-- 
         =====================================================
-        COPY BLOK DI ATAS UNTUK ORANG 04 SAMPAI 50
+        SILAHKAN COPY BLOK DI ATAS UNTUK ORANG 04 SAMPAI 50
         =====================================================
         -->
 
     </div>
 
-
     <!-- BUTTON -->
-
     <div class="tombol">
-
         <button onclick="simpanAbsensi()">
             💾 Simpan Absensi
         </button>
-
     </div>
 
 </div>
 
-
 <script>
-
 /* =========================
    TANGGAL OTOMATIS
 ========================= */
-
-const tanggal = document.getElementById("tanggal");
+const tanggalInput = document.getElementById("tanggal");
 
 const hariIni = new Date();
-
 const tahun = hariIni.getFullYear();
+const bulan = String(hariIni.getMonth() + 1).padStart(2, "0");
+const hari = String(hariIni.getDate()).padStart(2, "0");
 
-const bulan = String(
-    hariIni.getMonth() + 1
-).padStart(2, "0");
-
-const hari = String(
-    hariIni.getDate()
-).padStart(2, "0");
-
-tanggal.value =
-    `${tahun}-${bulan}-${hari}`;
+tanggalInput.value = `${tahun}-${bulan}-${hari}`;
 
 
 /* =========================
-   UPDATE JUMLAH
+   UPDATE JUMLAH STATISTIK
 ========================= */
-
 function updateJumlah() {
-
-    const semuaStatus =
-        document.querySelectorAll(".status");
+    const semuaStatus = document.querySelectorAll(".status");
 
     let hadir = 0;
     let izin = 0;
     let sakit = 0;
     let alpa = 0;
 
-
     semuaStatus.forEach(function(status) {
-
-        if (status.value === "Hadir") {
-            hadir++;
-        }
-
-        if (status.value === "Izin") {
-            izin++;
-        }
-
-        if (status.value === "Sakit") {
-            sakit++;
-        }
-
-        if (status.value === "Alpa") {
-            alpa++;
-        }
-
+        if (status.value === "Hadir") hadir++;
+        if (status.value === "Izin") izin++;
+        if (status.value === "Sakit") sakit++;
+        if (status.value === "Alpa") alpa++;
     });
 
-
-    document.getElementById("jumlahHadir")
-        .textContent = hadir;
-
-    document.getElementById("jumlahIzin")
-        .textContent = izin;
-
-    document.getElementById("jumlahSakit")
-        .textContent = sakit;
-
-    document.getElementById("jumlahAlpa")
-        .textContent = alpa;
-
+    document.getElementById("jumlahHadir").textContent = hadir;
+    document.getElementById("jumlahIzin").textContent = izin;
+    document.getElementById("jumlahSakit").textContent = sakit;
+    document.getElementById("jumlahAlpa").textContent = alpa;
 }
+
+
+/* =========================
+   MUAT DATA BERDASARKAN TANGGAL
+========================= */
+function muatAbsensi() {
+    const tanggalPilih = tanggalInput.value;
+    const dataSimpan = localStorage.getItem("absensi_" + tanggalPilih);
+    const semuaStatus = document.querySelectorAll(".status");
+
+    if (dataSimpan) {
+        // Jika data pada tanggal tersebut sudah pernah disimpan
+        const dataParsed = JSON.parse(dataSimpan);
+        semuaStatus.forEach(function(status, index) {
+            if (dataParsed[index]) {
+                status.value = dataParsed[index].status;
+            }
+        });
+    } else {
+        // Jika belum ada data tersimpan, defaultkan ke "Hadir" semua
+        semuaStatus.forEach(function(status) {
+            status.value = "Hadir";
+        });
+    }
+
+    updateJumlah();
+}
+
+
+/* =========================
+   KETIKA TANGGAL DIGANTI
+========================= */
+tanggalInput.addEventListener("change", muatAbsensi);
 
 
 /* =========================
    KETIKA STATUS DIUBAH
 ========================= */
-
-document.querySelectorAll(".status")
-.forEach(function(status) {
-
-    status.addEventListener(
-        "change",
-        updateJumlah
-    );
-
+document.querySelectorAll(".status").forEach(function(status) {
+    status.addEventListener("change", updateJumlah);
 });
 
 
 /* =========================
-   SIMPAN
+   SIMPAN ABSENSI
 ========================= */
-
 function simpanAbsensi() {
-
-    const semuaStatus =
-        document.querySelectorAll(".status");
-
+    const tanggalPilih = tanggalInput.value;
+    const semuaStatus = document.querySelectorAll(".status");
     const data = [];
 
-
-    semuaStatus.forEach(function(status, index) {
-
-        const orang =
-            status.closest(".orang");
-
-        const nama =
-            orang.querySelector(".nama")
-            .textContent.trim();
-
-        const posisi =
-            orang.querySelector(".posisi")
-            .textContent.trim();
-
+    semuaStatus.forEach(function(status) {
+        const orang = status.closest(".orang");
+        const nama = orang.querySelector(".nama").textContent.trim();
+        const posisi = orang.querySelector(".posisi").textContent.trim();
 
         data.push({
-
             nama: nama,
-
             posisi: posisi,
-
             status: status.value
-
         });
-
     });
 
+    // Simpan ke localStorage dengan kunci unik berdasarkan tanggal yang dipilih
+    localStorage.setItem("absensi_" + tanggalPilih, JSON.stringify(data));
 
-    localStorage.setItem(
-        "absensi",
-        JSON.stringify(data)
-    );
-
-
-    alert(
-        "Absensi berhasil disimpan!"
-    );
-
+    alert("Absensi tanggal " + tanggalPilih + " berhasil disimpan! 💾");
 }
 
 
 /* =========================
-   JUMLAH AWAL
+   PANGGIL SAAT HALAMAN DIBUKA
 ========================= */
-
-updateJumlah();
-
+muatAbsensi();
 </script>
 
 </body>
