@@ -3,334 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Rapat & Absensi MPK</title>
+<title>Sistem Rapat & Absensi MPK (Cloud)</title>
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background: #f3f6fa;
-    color: #1f2937;
-    padding: 25px;
-}
-
-.container {
-    max-width: 1100px;
-    margin: auto;
-}
-
-/* HEADER */
-.header {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    padding: 28px;
-    border-radius: 18px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-}
-
-.header h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
-}
-
-.header p {
-    opacity: 0.9;
-}
-
-/* TAB NAVIGATION */
-.tab-nav {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.tab-btn {
-    background: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: bold;
-    color: #4b5563;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: 0.2s;
-}
-
-.tab-btn.aktif {
-    background: #2563eb;
-    color: white;
-}
-
-/* CONTROL / INFO RAPAT */
-.control {
-    background: white;
-    padding: 18px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.tanggal-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.tanggal-input-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-input[type="date"] {
-    padding: 9px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-}
-
-.status-rapat-select {
-    padding: 9px 12px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    font-weight: bold;
-    background: #f9fafb;
-    cursor: pointer;
-}
-
-/* INDIKATOR RAPAT DI TENGAH */
-.info-rapat-badge {
-    background: #e0e7ff;
-    color: #3730a3;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.info-rapat-badge.ada-rapat {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.info-rapat-badge span {
-    background: #4f46e5;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 11px;
-    text-transform: uppercase;
-}
-
-.info-rapat-badge.ada-rapat span {
-    background: #22c55e;
-}
-
-/* TAB CONTENT */
-.tab-content {
-    display: none;
-}
-
-.tab-content.aktif {
-    display: block;
-}
-
-/* STATISTIK */
-.statistik {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.stat {
-    background: white;
-    padding: 18px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-}
-
-.stat span {
-    display: block;
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 5px;
-}
-
-.stat strong {
-    font-size: 25px;
-}
-
-.hadir { color: #16a34a; }
-.izin { color: #ca8a04; }
-.sakit { color: #2563eb; }
-.alpa { color: #dc2626; }
-
-/* DAFTAR ABSENSI */
-.daftar {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-}
-
-.judul-daftar {
-    padding: 20px;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 19px;
-    font-weight: bold;
-}
-
-.orang {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    transition: 0.2s;
-}
-
-.orang:hover {
-    background: #f9fafb;
-}
-
-.identitas {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.nomor {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: #e0e7ff;
-    color: #3730a3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-.nama {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.posisi {
-    font-size: 13px;
-    color: #6b7280;
-}
-
-select.status {
-    padding: 9px 13px;
-    border-radius: 9px;
-    border: 1px solid #d1d5db;
-    font-weight: bold;
-    cursor: pointer;
-    min-width: 120px;
-}
-
-/* CATATAN / NOTULEN RAPAT */
-.catatan-container {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-grup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.form-grup label {
-    font-weight: bold;
-    color: #374151;
-}
-
-.form-grup input, .form-grup textarea {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    font-family: inherit;
-    font-size: 14px;
-}
-
-.form-grup textarea {
-    resize: vertical;
-    min-height: 150px;
-}
-
-/* BUTTON */
-.tombol {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-button.btn-simpan {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 22px;
-    border-radius: 9px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button.btn-simpan:hover {
-    background: #1d4ed8;
-}
-
-@media (max-width: 700px) {
-    body { padding: 12px; }
-    .statistik { grid-template-columns: repeat(2, 1fr); }
-    .orang { align-items: flex-start; gap: 12px; }
-    select.status { min-width: 105px; }
-    .control { flex-direction: column; align-items: stretch; }
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padding: 25px; }
+.container { max-width: 1100px; margin: auto; }
+.header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 28px; border-radius: 18px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+.header h1 { font-size: 28px; margin-bottom: 8px; }
+.header p { opacity: 0.9; }
+.tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab-btn { background: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: bold; color: #4b5563; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.2s; }
+.tab-btn.aktif { background: #2563eb; color: white; }
+.control { background: white; padding: 18px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
+.tanggal-wrapper { display: flex; flex-direction: column; gap: 6px; }
+.tanggal-input-group { display: flex; align-items: center; gap: 10px; }
+input[type="date"] { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+.status-rapat-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #d1d5db; font-weight: bold; background: #f9fafb; cursor: pointer; }
+.info-rapat-badge { background: #e0e7ff; color: #3730a3; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.info-rapat-badge.ada-rapat { background: #dcfce7; color: #166534; }
+.info-rapat-badge span { background: #4f46e5; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; text-transform: uppercase; }
+.info-rapat-badge.ada-rapat span { background: #22c55e; }
+.tab-content { display: none; }
+.tab-content.aktif { display: block; }
+.statistik { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+.stat { background: white; padding: 18px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.stat span { display: block; font-size: 13px; color: #6b7280; margin-bottom: 5px; }
+.stat strong { font-size: 25px; }
+.hadir { color: #16a34a; } .izin { color: #ca8a04; } .sakit { color: #2563eb; } .alpa { color: #dc2626; }
+.daftar { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.judul-daftar { padding: 20px; border-bottom: 1px solid #e5e7eb; font-size: 19px; font-weight: bold; }
+.orang { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; transition: 0.2s; }
+.orang:hover { background: #f9fafb; }
+.identitas { display: flex; align-items: center; gap: 14px; }
+.nomor { width: 38px; height: 38px; border-radius: 50%; background: #e0e7ff; color: #3730a3; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.nama { font-weight: bold; margin-bottom: 4px; }
+.posisi { font-size: 13px; color: #6b7280; }
+select.status { padding: 9px 13px; border-radius: 9px; border: 1px solid #d1d5db; font-weight: bold; cursor: pointer; min-width: 120px; }
+.catatan-container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; }
+.form-grup { display: flex; flex-direction: column; gap: 8px; }
+.form-grup label { font-weight: bold; color: #374151; }
+.form-grup input, .form-grup textarea { padding: 12px; border: 1px solid #d1d5db; border-radius: 9px; font-family: inherit; font-size: 14px; }
+.form-grup textarea { resize: vertical; min-height: 150px; }
+.tombol { margin-top: 20px; display: flex; justify-content: flex-end; }
+button.btn-simpan { background: #2563eb; color: white; border: none; padding: 12px 22px; border-radius: 9px; font-weight: bold; cursor: pointer; }
+button.btn-simpan:hover { background: #1d4ed8; }
+#loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<div id="loadingOverlay">Menyimpan/Memuat Data Cloud... ⏳</div>
 
-    <!-- HEADER -->
+<div class="container">
     <div class="header">
         <h1>📋 Sistem Rapat & Absensi MPK</h1>
-        <p>Pencatatan Kehadiran Anggota & Notulen Hasil Rapat</p>
+        <p>Pencatatan Kehadiran & Notulen Online (Cloud Google Sheets)</p>
     </div>
 
-    <!-- TAB NAVIGASI -->
     <div class="tab-nav">
         <button class="tab-btn aktif" onclick="pindahTab('absensi')">👥 Absensi Rapat</button>
         <button class="tab-btn" onclick="pindahTab('catatan')">📝 Hasil & Masalah Rapat</button>
     </div>
 
-    <!-- KONTROL TANGGAL & INFO RAPAT -->
     <div class="control">
         <div class="tanggal-wrapper">
             <strong>Tanggal & Status Rapat:</strong>
             <div class="tanggal-input-group">
-                <input type="date" id="tanggal">
+                <input type="date" id="tanggal" onchange="muatDataCloud()">
                 <select id="statusAdaRapat" class="status-rapat-select" onchange="ubahStatusRapatOpsi()">
                     <option value="tidak">Tidak Ada Rapat</option>
                     <option value="ada">Ada Rapat</option>
@@ -338,7 +77,6 @@ button.btn-simpan:hover {
             </div>
         </div>
 
-        <!-- INFO / NAMA RAPAT DI TENGAH -->
         <div class="info-rapat-badge" id="badgeRapat">
             <span id="badgeLabel">Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
         </div>
@@ -348,44 +86,24 @@ button.btn-simpan:hover {
         </div>
     </div>
 
-
-    <!-- ================= TAB 1: ABSENSI ================= -->
+    <!-- TAB 1: ABSENSI -->
     <div id="tabAbsensi" class="tab-content aktif">
-        
-        <!-- STATISTIK -->
         <div class="statistik">
-            <div class="stat">
-                <span>HADIR</span>
-                <strong class="hadir" id="jumlahHadir">0</strong>
-            </div>
-            <div class="stat">
-                <span>IZIN</span>
-                <strong class="izin" id="jumlahIzin">0</strong>
-            </div>
-            <div class="stat">
-                <span>SAKIT</span>
-                <strong class="sakit" id="jumlahSakit">0</strong>
-            </div>
-            <div class="stat">
-                <span>ALPA</span>
-                <strong class="alpa" id="jumlahAlpa">0</strong>
-            </div>
+            <div class="stat"><span>HADIR</span><strong class="hadir" id="jumlahHadir">0</strong></div>
+            <div class="stat"><span>IZIN</span><strong class="izin" id="jumlahIzin">0</strong></div>
+            <div class="stat"><span>SAKIT</span><strong class="sakit" id="jumlahSakit">0</strong></div>
+            <div class="stat"><span>ALPA</span><strong class="alpa" id="jumlahAlpa">0</strong></div>
         </div>
 
-        <!-- DAFTAR ANGGOTA -->
         <div class="daftar">
             <div class="judul-daftar">Daftar Kehadiran Anggota MPK</div>
 
-            <!-- ANGGOTA 01 -->
             <div class="orang">
                 <div class="identitas">
                     <div class="nomor">01</div>
-                    <div>
-                        <div class="nama">Giyas Nabil Qurisqi</div>
-                        <div class="posisi">Ketua MPK</div>
-                    </div>
+                    <div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua MPK</div></div>
                 </div>
-                <select class="status">
+                <select class="status" onchange="updateJumlah()">
                     <option value="Hadir" selected>Hadir</option>
                     <option value="Izin">Izin</option>
                     <option value="Sakit">Sakit</option>
@@ -393,16 +111,12 @@ button.btn-simpan:hover {
                 </select>
             </div>
 
-            <!-- ANGGOTA 02 -->
             <div class="orang">
                 <div class="identitas">
                     <div class="nomor">02</div>
-                    <div>
-                        <div class="nama">Nama Anggota 02</div>
-                        <div class="posisi">Wakil Ketua / Anggota</div>
-                    </div>
+                    <div><div class="nama">Nama Anggota 02</div><div class="posisi">Wakil Ketua / Anggota</div></div>
                 </div>
-                <select class="status">
+                <select class="status" onchange="updateJumlah()">
                     <option value="Hadir" selected>Hadir</option>
                     <option value="Izin">Izin</option>
                     <option value="Sakit">Sakit</option>
@@ -410,78 +124,66 @@ button.btn-simpan:hover {
                 </select>
             </div>
 
-            <!-- ANGGOTA 03 -->
             <div class="orang">
                 <div class="identitas">
                     <div class="nomor">03</div>
-                    <div>
-                        <div class="nama">Nama Anggota 03</div>
-                        <div class="posisi">Sekretaris / Anggota</div>
-                    </div>
+                    <div><div class="nama">Nama Anggota 03</div><div class="posisi">Sekretaris / Anggota</div></div>
                 </div>
-                <select class="status">
+                <select class="status" onchange="updateJumlah()">
                     <option value="Hadir" selected>Hadir</option>
                     <option value="Izin">Izin</option>
                     <option value="Sakit">Sakit</option>
                     <option value="Alpa">Alpa</option>
                 </select>
             </div>
-            <!-- Silakan duplikat blok `.orang` di atas untuk menambah anggota lainnya -->
         </div>
 
         <div class="tombol">
-            <button class="btn-simpan" onclick="simpanAbsensi()">💾 Simpan Absensi</button>
+            <button class="btn-simpan" onclick="simpanAbsensiCloud()">💾 Simpan Absensi (Cloud)</button>
         </div>
     </div>
 
-
-    <!-- ================= TAB 2: CATATAN / HASIL RAPAT ================= -->
+    <!-- TAB 2: CATATAN -->
     <div id="tabCatatan" class="tab-content">
         <div class="catatan-container">
             <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
             
             <div class="form-grup">
-                <label for="inputJudulRapat">Nama / Topik Rapat (Format: Rapat [Isi Sendiri], Contoh: Rapat Hari Santri):</label>
-                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama rapat, misal: Rapat Evaluasi Bulanan..." oninput="updateTampilanJudulLive()">
+                <label for="inputJudulRapat">Nama / Topik Rapat (Cth: Rapat Hari Santri):</label>
+                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama rapat..." oninput="updateTampilanJudulLive()">
             </div>
 
             <div class="form-grup">
                 <label for="inputHasilRapat">Hasil Keputusan / Pembahasan Rapat:</label>
-                <textarea id="inputHasilRapat" placeholder="Tuliskan poin-poin keputusan atau hasil rapat di sini..."></textarea>
+                <textarea id="inputHasilRapat" placeholder="Tuliskan hasil rapat..."></textarea>
             </div>
 
             <div class="form-grup">
                 <label for="inputMasalahRapat">Kendala / Masalah yang Dibahas:</label>
-                <textarea id="inputMasalahRapat" placeholder="Tuliskan kendala, masalah, atau evaluasi yang muncul saat rapat..."></textarea>
+                <textarea id="inputMasalahRapat" placeholder="Tuliskan kendala rapat..."></textarea>
             </div>
 
             <div class="tombol" style="margin-top: 0;">
-                <button class="btn-simpan" onclick="simpanCatatanRapat()">💾 Simpan Catatan Rapat</button>
+                <button class="btn-simpan" onclick="simpanCatatanCloud()">💾 Simpan Catatan & Rapat (Cloud)</button>
             </div>
         </div>
     </div>
-
 </div>
 
-
 <script>
-/* =========================
-   PENGATURAN TANGGAL & TAB
-========================= */
+// URL WEB APP GOOGLE SCRIPT SUDAH TERPASANG OTOMATIS DI SINI:
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxP1aIzGC9RVT-kz7jSkac5maxBkU0uUmmi9iDDTr2jFrI6Lnhc_oXXbnu8FIfkknpT/exec";
+
 const tanggalInput = document.getElementById("tanggal");
 const statusAdaRapat = document.getElementById("statusAdaRapat");
+const loadingOverlay = document.getElementById("loadingOverlay");
 
 const hariIni = new Date();
-const tahun = hariIni.getFullYear();
-const bulan = String(hariIni.getMonth() + 1).padStart(2, "0");
-const hari = String(hariIni.getDate()).padStart(2, "0");
-
-tanggalInput.value = `${tahun}-${bulan}-${hari}`;
+tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
 
 function pindahTab(namaTab) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('aktif'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('aktif'));
-
     if (namaTab === 'absensi') {
         document.getElementById('tabAbsensi').classList.add('aktif');
         document.querySelectorAll('.tab-btn')[0].classList.add('aktif');
@@ -493,181 +195,160 @@ function pindahTab(namaTab) {
     }
 }
 
-
-/* =========================
-   UPDATE STATISTIK ABSENSI
-========================= */
 function updateJumlah() {
-    const semuaStatus = document.querySelectorAll(".status");
     let hadir = 0, izin = 0, sakit = 0, alpa = 0;
-
-    semuaStatus.forEach(function(status) {
-        if (status.value === "Hadir") hadir++;
-        if (status.value === "Izin") izin++;
-        if (status.value === "Sakit") sakit++;
-        if (status.value === "Alpa") alpa++;
+    document.querySelectorAll(".status").forEach(s => {
+        if (s.value === "Hadir") hadir++;
+        if (s.value === "Izin") izin++;
+        if (s.value === "Sakit") sakit++;
+        if (s.value === "Alpa") alpa++;
     });
-
     document.getElementById("jumlahHadir").textContent = hadir;
     document.getElementById("jumlahIzin").textContent = izin;
     document.getElementById("jumlahSakit").textContent = sakit;
     document.getElementById("jumlahAlpa").textContent = alpa;
 }
 
-
-/* =========================
-   UBAH STATUS ADA/TIDAK RAPAT
-========================= */
-function ubahStatusRapaOpsi() {
+function ubahStatusRapatOpsi() {
     const badgeRapat = document.getElementById("badgeRapat");
-    const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const teksJudul = document.getElementById("teksJudulRapat");
     const badgeLabel = document.getElementById("badgeLabel");
     const inputJudul = document.getElementById("inputJudulRapat");
 
     if (statusAdaRapat.value === "tidak") {
         badgeRapat.classList.remove("ada-rapat");
         badgeLabel.textContent = "Agenda";
-        teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
+        teksJudul.textContent = "Tidak ada agenda rapat khusus";
         inputJudul.value = "";
     } else {
         badgeRapat.classList.add("ada-rapat");
         badgeLabel.textContent = "Rapat Ditandai";
-        if (inputJudul.value.trim() === "") {
-            inputJudul.value = "Rapat ";
-        }
-        teksJudulRapat.textContent = inputJudul.value;
+        if (inputJudul.value.trim() === "") inputJudul.value = "Rapat ";
+        teksJudul.textContent = inputJudul.value;
     }
 }
 
 function updateTampilanJudulLive() {
-    const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const teksJudul = document.getElementById("teksJudulRapat");
     const inputJudul = document.getElementById("inputJudulRapat");
-    
     if (statusAdaRapat.value === "ada") {
-        teksJudulRapat.textContent = inputJudul.value.trim() !== "" ? inputJudul.value : "Rapat (Belum diisi)";
+        teksJudul.textContent = inputJudul.value.trim() !== "" ? inputJudul.value : "Rapat (Belum diisi)";
     }
 }
 
-
-/* =========================
-   MUAT DATA BERDASARKAN TANGGAL
-========================= */
-function muatData() {
+// ================= AMBIL DATA DARI CLOUD =================
+function muatDataCloud() {
+    loadingOverlay.style.display = "flex";
     const tgl = tanggalInput.value;
-    
-    // 1. Muat Absensi
-    const dataAbsen = localStorage.getItem("absensi_" + tgl);
-    const semuaStatus = document.querySelectorAll(".status");
-    if (dataAbsen) {
-        const parsed = JSON.parse(dataAbsen);
-        semuaStatus.forEach((status, idx) => {
-            if (parsed[idx]) status.value = parsed[idx].status;
-        });
-    } else {
-        semuaStatus.forEach(status => status.value = "Hadir");
-    }
-    updateJumlah();
 
-    // 2. Muat Catatan Rapat & Status Rapat
-    const dataCatatan = localStorage.getItem("catatan_" + tgl);
-    const badgeRapat = document.getElementById("badgeRapat");
-    const teksJudulRapat = document.getElementById("teksJudulRapat");
-    const badgeLabel = document.getElementById("badgeLabel");
-    const inputJudul = document.getElementById("inputJudulRapat");
-    const inputHasil = document.getElementById("inputHasilRapat");
-    const inputMasalah = document.getElementById("inputMasalahRapat");
+    fetch(`${WEB_APP_URL}?tanggal=${tgl}`)
+    .then(res => res.json())
+    .then(data => {
+        const semuaStatus = document.querySelectorAll(".status");
+        if (data.absen && data.absen.length > 0) {
+            semuaStatus.forEach((status, idx) => {
+                if (data.absen[idx]) status.value = data.absen[idx].status;
+            });
+        } else {
+            semuaStatus.forEach(status => status.value = "Hadir");
+        }
+        updateJumlah();
 
-    if (dataCatatan) {
-        const parsedCatatan = JSON.parse(dataCatatan);
-        statusAdaRapat.value = parsedCatatan.statusRapat || "tidak";
-        inputJudul.value = parsedCatatan.judul || "";
-        inputHasil.value = parsedCatatan.hasil || "";
-        inputMasalah.value = parsedCatatan.masalah || "";
-        
+        const c = data.catatan;
+        statusAdaRapat.value = c.statusRapat || "tidak";
+        document.getElementById("inputJudulRapat").value = c.judul || "";
+        document.getElementById("inputHasilRapat").value = c.hasil || "";
+        document.getElementById("inputMasalahRapat").value = c.masalah || "";
+
+        const badgeRapat = document.getElementById("badgeRapat");
+        const teksJudul = document.getElementById("teksJudulRapat");
+        const badgeLabel = document.getElementById("badgeLabel");
+
         if (statusAdaRapat.value === "ada") {
             badgeRapat.classList.add("ada-rapat");
             badgeLabel.textContent = "Rapat Ditandai";
-            teksJudulRapat.textContent = parsedCatatan.judul.trim() !== "" ? parsedCatatan.judul : "Rapat Terjadwal";
+            teksJudul.textContent = c.judul ? c.judul : "Rapat Terjadwal";
         } else {
             badgeRapat.classList.remove("ada-rapat");
             badgeLabel.textContent = "Agenda";
-            teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
+            teksJudul.textContent = "Tidak ada agenda rapat khusus";
         }
-    } else {
-        statusAdaRapat.value = "tidak";
-        badgeRapat.classList.remove("ada-rapat");
-        badgeLabel.textContent = "Agenda";
-        inputJudul.value = "";
-        inputHasil.value = "";
-        inputMasalah.value = "";
-        teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
-    }
+        loadingOverlay.style.display = "none";
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Gagal memuat data dari cloud.");
+        loadingOverlay.style.display = "none";
+    });
 }
 
-
-/* =========================
-   SIMPAN DATA
-========================= */
-function simpanAbsensi() {
+// ================= SIMPAN ABSENSI KE CLOUD =================
+function simpanAbsensiCloud() {
+    loadingOverlay.style.display = "flex";
     const tgl = tanggalInput.value;
-    const semuaStatus = document.querySelectorAll(".status");
-    const data = [];
+    const listAbsen = [];
 
-    semuaStatus.forEach(status => {
+    document.querySelectorAll(".status").forEach(status => {
         const orang = status.closest(".orang");
-        data.push({
+        listAbsen.push({
             nama: orang.querySelector(".nama").textContent.trim(),
             posisi: orang.querySelector(".posisi").textContent.trim(),
             status: status.value
         });
     });
 
-    localStorage.setItem("absensi_" + tgl, JSON.stringify(data));
-    alert("Absensi tanggal " + tgl + " berhasil disimpan!");
-}
-
-function simpanCatatanRapat() {
-    const tgl = tanggalInput.value;
-    const statusRapatVal = statusAdaRapat.value;
-    const judul = document.getElementById("inputJudulRapat").value;
-    const hasil = document.getElementById("inputHasilRapat").value;
-    const masalah = document.getElementById("inputMasalahRapat").value;
-
-    const dataCatatan = { 
-        statusRapat: statusRapatVal, 
-        judul: judul, 
-        hasil: hasil, 
-        masalah: masalah 
+    const payload = {
+        aksi: "simpan_absensi",
+        tanggal: tgl,
+        dataAbsen: listAbsen
     };
-    
-    localStorage.setItem("catatan_" + tgl, JSON.stringify(dataCatatan));
 
-    // Update langsung badge di atas
-    if (statusRapatVal === "ada") {
-        document.getElementById("badgeRapat").classList.add("ada-rapat");
-        document.getElementById("badgeLabel").textContent = "Rapat Ditandai";
-        document.getElementById("teksJudulRapat").textContent = judul.trim() !== "" ? judul : "Rapat Terjadwal";
-    } else {
-        document.getElementById("badgeRapat").classList.remove("ada-rapat");
-        document.getElementById("badgeLabel").textContent = "Agenda";
-        document.getElementById("teksJudulRapat").textContent = "Tidak ada agenda rapat khusus";
-    }
-    
-    alert("Catatan & status rapat tanggal " + tgl + " berhasil disimpan! 📝");
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(res => {
+        loadingOverlay.style.display = "none";
+        alert("Absensi berhasil disimpan ke Cloud Google Sheets! ☁️");
+    })
+    .catch(err => {
+        loadingOverlay.style.display = "none";
+        alert("Gagal menyimpan absensi.");
+    });
 }
 
+// ================= SIMPAN CATATAN KE CLOUD =================
+function simpanCatatanCloud() {
+    loadingOverlay.style.display = "flex";
+    const tgl = tanggalInput.value;
+    
+    const payload = {
+        aksi: "simpan_catatan",
+        tanggal: tgl,
+        statusRapat: statusAdaRapat.value,
+        judul: document.getElementById("inputJudulRapat").value,
+        hasil: document.getElementById("inputHasilRapat").value,
+        masalah: document.getElementById("inputMasalahRapat").value
+    };
 
-/* =========================
-   EVENT LISTENER
-========================= */
-tanggalInput.addEventListener("change", muatData);
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(res => {
+        loadingOverlay.style.display = "none";
+        ubahStatusRapatOpsi();
+        alert("Catatan & Hasil Rapat berhasil disimpan ke Cloud! 📝☁️");
+    })
+    .catch(err => {
+        loadingOverlay.style.display = "none";
+        alert("Gagal menyimpan catatan.");
+    });
+}
 
-document.querySelectorAll(".status").forEach(status => {
-    status.addEventListener("change", updateJumlah);
-});
-
-// Panggil saat pertama kali load
-muatData();
+muatDataCloud();
 </script>
 
 </body>
