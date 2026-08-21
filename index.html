@@ -98,6 +98,15 @@ input[type="date"] {
     border-radius: 8px;
 }
 
+.status-rapat-select {
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-weight: bold;
+    background: #f9fafb;
+    cursor: pointer;
+}
+
 /* INDIKATOR RAPAT DI TENGAH */
 .info-rapat-badge {
     background: #e0e7ff;
@@ -111,6 +120,11 @@ input[type="date"] {
     gap: 8px;
 }
 
+.info-rapat-badge.ada-rapat {
+    background: #dcfce7;
+    color: #166534;
+}
+
 .info-rapat-badge span {
     background: #4f46e5;
     color: white;
@@ -118,6 +132,10 @@ input[type="date"] {
     border-radius: 10px;
     font-size: 11px;
     text-transform: uppercase;
+}
+
+.info-rapat-badge.ada-rapat span {
+    background: #22c55e;
 }
 
 /* TAB CONTENT */
@@ -216,7 +234,7 @@ input[type="date"] {
     color: #6b7280;
 }
 
-select {
+select.status {
     padding: 9px 13px;
     border-radius: 9px;
     border: 1px solid #d1d5db;
@@ -285,7 +303,7 @@ button.btn-simpan:hover {
     body { padding: 12px; }
     .statistik { grid-template-columns: repeat(2, 1fr); }
     .orang { align-items: flex-start; gap: 12px; }
-    select { min-width: 105px; }
+    select.status { min-width: 105px; }
     .control { flex-direction: column; align-items: stretch; }
 }
 </style>
@@ -310,15 +328,19 @@ button.btn-simpan:hover {
     <!-- KONTROL TANGGAL & INFO RAPAT -->
     <div class="control">
         <div class="tanggal-wrapper">
-            <strong>Tanggal Rapat:</strong>
+            <strong>Tanggal & Status Rapat:</strong>
             <div class="tanggal-input-group">
                 <input type="date" id="tanggal">
+                <select id="statusAdaRapat" class="status-rapat-select" onchange="ubahStatusRapatOpsi()">
+                    <option value="tidak">Tidak Ada Rapat</option>
+                    <option value="ada">Ada Rapat</option>
+                </select>
             </div>
         </div>
 
         <!-- INFO / NAMA RAPAT DI TENGAH -->
         <div class="info-rapat-badge" id="badgeRapat">
-            <span>Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
+            <span id="badgeLabel">Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
         </div>
 
         <div>
@@ -419,8 +441,8 @@ button.btn-simpan:hover {
             <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
             
             <div class="form-grup">
-                <label for="inputJudulRapat">Judul / Topik Rapat (Cth: Rapat Hari Santri):</label>
-                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama/judul agenda rapat pada tanggal ini...">
+                <label for="inputJudulRapat">Nama / Topik Rapat (Format: Rapat [Isi Sendiri], Contoh: Rapat Hari Santri):</label>
+                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama rapat, misal: Rapat Evaluasi Bulanan..." oninput="updateTampilanJudulLive()">
             </div>
 
             <div class="form-grup">
@@ -447,6 +469,7 @@ button.btn-simpan:hover {
    PENGATURAN TANGGAL & TAB
 ========================= */
 const tanggalInput = document.getElementById("tanggal");
+const statusAdaRapat = document.getElementById("statusAdaRapat");
 
 const hariIni = new Date();
 const tahun = hariIni.getFullYear();
@@ -493,6 +516,40 @@ function updateJumlah() {
 
 
 /* =========================
+   UBAH STATUS ADA/TIDAK RAPAT
+========================= */
+function ubahStatusRapaOpsi() {
+    const badgeRapat = document.getElementById("badgeRapat");
+    const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const badgeLabel = document.getElementById("badgeLabel");
+    const inputJudul = document.getElementById("inputJudulRapat");
+
+    if (statusAdaRapat.value === "tidak") {
+        badgeRapat.classList.remove("ada-rapat");
+        badgeLabel.textContent = "Agenda";
+        teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
+        inputJudul.value = "";
+    } else {
+        badgeRapat.classList.add("ada-rapat");
+        badgeLabel.textContent = "Rapat Ditandai";
+        if (inputJudul.value.trim() === "") {
+            inputJudul.value = "Rapat ";
+        }
+        teksJudulRapat.textContent = inputJudul.value;
+    }
+}
+
+function updateTampilanJudulLive() {
+    const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const inputJudul = document.getElementById("inputJudulRapat");
+    
+    if (statusAdaRapat.value === "ada") {
+        teksJudulRapat.textContent = inputJudul.value.trim() !== "" ? inputJudul.value : "Rapat (Belum diisi)";
+    }
+}
+
+
+/* =========================
    MUAT DATA BERDASARKAN TANGGAL
 ========================= */
 function muatData() {
@@ -511,25 +568,35 @@ function muatData() {
     }
     updateJumlah();
 
-    // 2. Muat Catatan Rapat & Update Badge Header
+    // 2. Muat Catatan Rapat & Status Rapat
     const dataCatatan = localStorage.getItem("catatan_" + tgl);
+    const badgeRapat = document.getElementById("badgeRapat");
     const teksJudulRapat = document.getElementById("teksJudulRapat");
+    const badgeLabel = document.getElementById("badgeLabel");
     const inputJudul = document.getElementById("inputJudulRapat");
     const inputHasil = document.getElementById("inputHasilRapat");
     const inputMasalah = document.getElementById("inputMasalahRapat");
 
     if (dataCatatan) {
         const parsedCatatan = JSON.parse(dataCatatan);
+        statusAdaRapat.value = parsedCatatan.statusRapat || "tidak";
         inputJudul.value = parsedCatatan.judul || "";
         inputHasil.value = parsedCatatan.hasil || "";
         inputMasalah.value = parsedCatatan.masalah || "";
         
-        if (parsedCatatan.judul.trim() !== "") {
-            teksJudulRapat.textContent = parsedCatatan.judul;
+        if (statusAdaRapat.value === "ada") {
+            badgeRapat.classList.add("ada-rapat");
+            badgeLabel.textContent = "Rapat Ditandai";
+            teksJudulRapat.textContent = parsedCatatan.judul.trim() !== "" ? parsedCatatan.judul : "Rapat Terjadwal";
         } else {
-            teksJudulRapat.textContent = "Rapat Terjadwal (Tanpa Judul)";
+            badgeRapat.classList.remove("ada-rapat");
+            badgeLabel.textContent = "Agenda";
+            teksJudulRapat.textContent = "Tidak ada agenda rapat khusus";
         }
     } else {
+        statusAdaRapat.value = "tidak";
+        badgeRapat.classList.remove("ada-rapat");
+        badgeLabel.textContent = "Agenda";
         inputJudul.value = "";
         inputHasil.value = "";
         inputMasalah.value = "";
@@ -561,17 +628,32 @@ function simpanAbsensi() {
 
 function simpanCatatanRapat() {
     const tgl = tanggalInput.value;
+    const statusRapatVal = statusAdaRapat.value;
     const judul = document.getElementById("inputJudulRapat").value;
     const hasil = document.getElementById("inputHasilRapat").value;
     const masalah = document.getElementById("inputMasalahRapat").value;
 
-    const dataCatatan = { judul, hasil, masalah };
+    const dataCatatan = { 
+        statusRapat: statusRapatVal, 
+        judul: judul, 
+        hasil: hasil, 
+        masalah: masalah 
+    };
+    
     localStorage.setItem("catatan_" + tgl, JSON.stringify(dataCatatan));
 
     // Update langsung badge di atas
-    document.getElementById("teksJudulRapat").textContent = judul.trim() !== "" ? judul : "Tidak ada agenda rapat khusus";
+    if (statusRapatVal === "ada") {
+        document.getElementById("badgeRapat").classList.add("ada-rapat");
+        document.getElementById("badgeLabel").textContent = "Rapat Ditandai";
+        document.getElementById("teksJudulRapat").textContent = judul.trim() !== "" ? judul : "Rapat Terjadwal";
+    } else {
+        document.getElementById("badgeRapat").classList.remove("ada-rapat");
+        document.getElementById("badgeLabel").textContent = "Agenda";
+        document.getElementById("teksJudulRapat").textContent = "Tidak ada agenda rapat khusus";
+    }
     
-    alert("Catatan & hasil rapat tanggal " + tgl + " berhasil disimpan! 📝");
+    alert("Catatan & status rapat tanggal " + tgl + " berhasil disimpan! 📝");
 }
 
 
