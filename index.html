@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistem Rapat & Absensi MPK (Cloud)</title>
-<!-- Pustaka QR Code Generator -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<!-- Pustaka HTML5 QR Code Scanner -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
@@ -111,7 +109,6 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
 
 <div id="loadingOverlay">Menyimpan/Memuat Data Cloud... ⏳</div>
 
-<!-- MODAL QR CODE / SCANNER -->
 <div id="qrModal">
     <div class="qr-modal-content">
         <h3 id="modalTitle">QR Code Absensi</h3>
@@ -120,13 +117,11 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
         <div id="qrcodeContainer"></div>
         <div id="reader" style="width: 100%; display: none; margin-bottom: 8px;"></div>
 
-        <!-- Tombol Cadangan Upload File QR Code -->
         <div id="uploadScanSection" style="display: none; margin-bottom: 8px; text-align: left;">
             <label style="font-size: 12px; font-weight: bold; color: #4b5563; display: block; margin-bottom: 3px;">Atau Upload Screenshot QR Code:</label>
             <input type="file" id="qrFileInput" accept="image/*" onchange="scanFileQR(event)" style="font-size: 12px; width: 100%;">
         </div>
         
-        <!-- Form Input Otomatis Setelah Scan -->
         <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px;">
             <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Masukkan identitas Anda:</div>
             <div style="margin-bottom: 6px;">
@@ -203,7 +198,6 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
             </div>
         </div>
 
-        <!-- TAB 1: ABSENSI -->
         <div id="tabAbsensi" class="tab-content aktif">
             <div class="statistik">
                 <div class="stat"><span>HADIR</span><strong class="hadir" id="jumlahHadir">0</strong></div>
@@ -214,63 +208,48 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
 
             <div class="daftar">
                 <div class="judul-daftar">Daftar Kehadiran Anggota MPK</div>
-                <!-- 01 -->
                 <div class="orang"><div class="identitas"><div class="nomor">01</div><div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 02 -->
                 <div class="orang"><div class="identitas"><div class="nomor">02</div><div><div class="nama">Mutiara Khoirunnisa</div><div class="posisi">Wakil Ketua</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 03 -->
                 <div class="orang"><div class="identitas"><div class="nomor">03</div><div><div class="nama">Alifia Nabila Putri</div><div class="posisi">Sekretaris 1</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 04 -->
                 <div class="orang"><div class="identitas"><div class="nomor">04</div><div><div class="nama">Aisyah Firdasari</div><div class="posisi">Sekretaris 2</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 05 -->
                 <div class="orang"><div class="identitas"><div class="nomor">05</div><div><div class="nama">Gina Qolbiyatul Latifah</div><div class="posisi">Bendahara</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 06 -->
                 <div class="orang"><div class="identitas"><div class="nomor">06</div><div><div class="nama">M. Andra Ary Cesanov</div><div class="posisi">Komisi 1</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 07 -->
                 <div class="orang"><div class="identitas"><div class="nomor">07</div><div><div class="nama">Andika Dwi Kuncoro</div><div class="posisi">Komisi 1</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 08 -->
                 <div class="orang"><div class="identitas"><div class="nomor">08</div><div><div class="nama">Yoga Aditya Pratama</div><div class="posisi">Komisi 1</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 09 -->
                 <div class="orang"><div class="identitas"><div class="nomor">09</div><div><div class="nama">Fahrel</div><div class="posisi">Komisi 1</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 10 -->
                 <div class="orang"><div class="identitas"><div class="nomor">10</div><div><div class="nama">Darrel Dewangga Arjuna</div><div class="posisi">Komisi 2</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 11 -->
                 <div class="orang"><div class="identitas"><div class="nomor">11</div><div><div class="nama">Hilal Lee Diar Sulaeman Malik</div><div class="posisi">Komisi 2</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 12 -->
                 <div class="orang"><div class="identitas"><div class="nomor">12</div><div><div class="nama">Alfirza Nurhidayahtulloh Arrahman</div><div class="posisi">Komisi 2</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 13 -->
                 <div class="orang"><div class="identitas"><div class="nomor">13</div><div><div class="nama">Cut Annisa Syarifuddin</div><div class="posisi">Komisi 3</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 14 -->
                 <div class="orang"><div class="identitas"><div class="nomor">14</div><div><div class="nama">Muhamad Rizik</div><div class="posisi">Komisi 3</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
-                <!-- 15 -->
                 <div class="orang"><div class="identitas"><div class="nomor">15</div><div><div class="nama">Aisy Galuh Khaerunnisa Putri</div><div class="posisi">Komisi 3</div></div></div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);"><option value="" selected disabled>-- Pilih --</option><option value="Hadir">Hadir</option><option value="Izin">Izin</option><option value="Sakit">Sakit</option><option value="Alpa">Alpa</option></select>
                 </div>
@@ -281,7 +260,6 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
             </div>
         </div>
 
-        <!-- TAB 2: CATATAN -->
         <div id="tabCatatan" class="tab-content">
             <div class="catatan-container">
                 <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
@@ -516,21 +494,33 @@ function scanFileQR(event) {
 }
 
 function berhasilScanQR(teks) {
-    // Matikan kamera terlebih dahulu secara mutlak agar elemen video tidak menghalangi tombol
-    if (html5QrCodeScanner) {
-        html5QrCodeScanner.stop().then(() => {
-            html5QrCodeScanner.clear();
-        }).catch(err => {});
-    }
-    
     if (teks.startsWith("MPK-HADIR-")) {
         scannedTanggalTarget = teks.replace("MPK-HADIR-", "").trim();
     } else {
         scannedTanggalTarget = tanggalInput.value; 
     }
 
-    document.getElementById("reader").style.display = "none";
-    document.getElementById("uploadScanSection").style.display = "none";
+    // Matikan dan bersihkan kamera secara tuntas agar tombol bisa dipencet
+    if (html5QrCodeScanner) {
+        html5QrCodeScanner.stop().then(() => {
+            html5QrCodeScanner.clear();
+            tampilkanFormHasilScan();
+        }).catch(err => {
+            tampilkanFormHasilScan();
+        });
+    } else {
+        tampilkanFormHasilScan();
+    }
+}
+
+function tampilkanFormHasilScan() {
+    const readerDiv = document.getElementById("reader");
+    const uploadSection = document.getElementById("uploadScanSection");
+    
+    if (readerDiv) readerDiv.innerHTML = "";
+    readerDiv.style.display = "none";
+    if (uploadSection) uploadSection.style.display = "none";
+    
     document.getElementById("modalDesc").textContent = "QR Code berhasil terbaca! (Agenda: " + scannedTanggalTarget + ")";
     document.getElementById("formScanResult").style.display = "block";
 }
