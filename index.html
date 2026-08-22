@@ -6,8 +6,104 @@
 <title>Sistem Rapat & Absensi MPK (Cloud)</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padding: 25px; }
-.container { max-width: 1100px; margin: auto; }
+body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padding: 25px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.container { width: 100%; max-width: 1100px; margin: auto; }
+
+/* Styling Halaman Login */
+#login-section {
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    width: 100%;
+    max-width: 420px;
+    margin: auto;
+}
+.login-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.login-header h2 {
+    font-size: 24px;
+    color: #2563eb;
+    margin-bottom: 8px;
+}
+.login-header p {
+    font-size: 14px;
+    color: #6b7280;
+}
+.form-group-login {
+    margin-bottom: 18px;
+}
+.form-group-login label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 6px;
+}
+.form-control-login {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.form-control-login:focus {
+    border-color: #2563eb;
+}
+.login-btn {
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 9px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+.login-btn:hover {
+    background: #1d4ed8;
+}
+.error-msg {
+    color: #dc2626;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 12px;
+    display: none;
+}
+
+/* Bagian Aplikasi Utama (Disembunyikan Sebelum Login) */
+#main-app {
+    display: none;
+}
+
+/* Top Bar untuk Logout */
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+.logout-btn {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 8px 16px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.logout-btn:hover {
+    background: #fee2e2;
+}
+
 .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 28px; border-radius: 18px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
 .header h1 { font-size: 28px; margin-bottom: 8px; }
 .header p { opacity: 0.9; }
@@ -55,295 +151,324 @@ button.btn-simpan:hover { background: #1d4ed8; }
 <div id="loadingOverlay">Menyimpan/Memuat Data Cloud... ⏳</div>
 
 <div class="container">
-    <div class="header">
-        <h1>📋 Sistem Rapat & Absensi MPK</h1>
-        <p>Pencatatan Kehadiran & Notulen Online (Cloud Google Sheets)</p>
+
+    <!-- BAGIAN LOGIN -->
+    <div id="login-section">
+        <div class="login-header">
+            <h2>🔐 Login Sistem MPK</h2>
+            <p>SMKS Tunas Harapan Pasar Kemis</p>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group-login">
+                <label for="username">Username</label>
+                <input type="text" id="username" class="form-control-login" placeholder="Masukkan username..." required>
+            </div>
+            <div class="form-group-login">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control-login" placeholder="Masukkan password..." required>
+            </div>
+            <button type="submit" class="login-btn">MASUK APLIKASI</button>
+            <div id="errorMsg" class="error-msg">Username atau Password salah!</div>
+        </form>
     </div>
 
-    <div class="tab-nav">
-        <button class="tab-btn aktif" onclick="pindahTab('absensi')">👥 Absensi Rapat</button>
-        <button class="tab-btn" onclick="pindahTab('catatan')">📝 Hasil & Masalah Rapat</button>
+    <!-- BAGIAN APLIKASI UTAMA (SETELAH LOGIN) -->
+    <div id="main-app">
+        <div class="top-bar">
+            <button class="logout-btn" onclick="handleLogout()">🔒 Logout</button>
+        </div>
+
+        <div class="header">
+            <h1>📋 Sistem Rapat & Absensi MPK</h1>
+            <p>Pencatatan Kehadiran & Notulen Online (Cloud Google Sheets)</p>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn aktif" onclick="pindahTab('absensi')">👥 Absensi Rapat</button>
+            <button class="tab-btn" onclick="pindahTab('catatan')">📝 Hasil & Masalah Rapat</button>
+        </div>
+
+        <div class="control">
+            <div class="tanggal-wrapper">
+                <strong>Tanggal & Status Rapat:</strong>
+                <div class="tanggal-input-group">
+                    <input type="date" id="tanggal" onchange="muatDataCloud()">
+                    <select id="statusAdaRapat" class="status-rapat-select" onchange="ubahStatusRapatOpsi()">
+                        <option value="tidak">Tidak Ada Rapat</option>
+                        <option value="ada">Ada Rapat</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="info-rapat-badge" id="badgeRapat">
+                <span id="badgeLabel">Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
+            </div>
+
+            <div>
+                <strong>Status:</strong> <span id="statusMode" style="color: #2563eb; font-weight: bold;">Mode Absensi</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: ABSENSI -->
+        <div id="tabAbsensi" class="tab-content aktif">
+            <div class="statistik">
+                <div class="stat"><span>HADIR</span><strong class="hadir" id="jumlahHadir">0</strong></div>
+                <div class="stat"><span>IZIN</span><strong class="izin" id="jumlahIzin">0</strong></div>
+                <div class="stat"><span>SAKIT</span><strong class="sakit" id="jumlahSakit">0</strong></div>
+                <div class="stat"><span>ALPA</span><strong class="alpa" id="jumlahAlpa">0</strong></div>
+            </div>
+
+            <div class="daftar">
+                <div class="judul-daftar">Daftar Kehadiran Anggota MPK</div>
+
+                <!-- 01 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">01</div>
+                        <div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 02 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">02</div>
+                        <div><div class="nama">Mutiara Khoirunnisa</div><div class="posisi">Wakil Ketua</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 03 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">03</div>
+                        <div><div class="nama">Alifia Nabila Putri</div><div class="posisi">Sekretaris 1</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 04 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">04</div>
+                        <div><div class="nama">Aisyah Firdasari</div><div class="posisi">Sekretaris 2</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 05 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">05</div>
+                        <div><div class="nama">Gina Qolbiyatul Latifah</div><div class="posisi">Bendahara</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 06 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">06</div>
+                        <div><div class="nama">M. Andra Ary Cesanov</div><div class="posisi">Komisi 1</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 07 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">07</div>
+                        <div><div class="nama">Andika Dwi Kuncoro</div><div class="posisi">Komisi 1</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 08 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">08</div>
+                        <div><div class="nama">Yoga Aditya Pratama</div><div class="posisi">Komisi 1</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 09 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">09</div>
+                        <div><div class="nama">Fahrel</div><div class="posisi">Komisi 1</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 10 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">10</div>
+                        <div><div class="nama">Darrel Dewangga Arjuna</div><div class="posisi">Komisi 2</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 11 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">11</div>
+                        <div><div class="nama">Hilal Lee Diar Sulaeman Malik</div><div class="posisi">Komisi 2</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 12 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">12</div>
+                        <div><div class="nama">Alfirza Nurhidayahtulloh Arrahman</div><div class="posisi">Komisi 2</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 13 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">13</div>
+                        <div><div class="nama">Cut Annisa Syarifuddin</div><div class="posisi">Komisi 3</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 14 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">14</div>
+                        <div><div class="nama">Muhamad Rizik</div><div class="posisi">Komisi 3</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+                <!-- 15 -->
+                <div class="orang">
+                    <div class="identitas">
+                        <div class="nomor">15</div>
+                        <div><div class="nama">Aisy Galuh Khaerunnisa Putri</div><div class="posisi">Komisi 3</div></div>
+                    </div>
+                    <select class="status" onchange="updateJumlah()">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Izin">Izin</option>
+                        <option value="Sakit">Sakit</option>
+                        <option value="Alpa">Alpa</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="tombol">
+                <button class="btn-simpan" onclick="simpanAbsensiCloud()">💾 Simpan Absensi (Cloud)</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: CATATAN -->
+        <div id="tabCatatan" class="tab-content">
+            <div class="catatan-container">
+                <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
+                
+                <div class="form-grup">
+                    <label for="inputJudulRapat">Nama / Topik Rapat (Cth: Rapat Hari Santri):</label>
+                    <input type="text" id="inputJudulRapat" placeholder="Masukkan nama rapat..." oninput="updateTampilanJudulLive()">
+                </div>
+
+                <div class="form-grup">
+                    <label for="inputHasilRapat">Hasil Keputusan / Pembahasan Rapat:</label>
+                    <textarea id="inputHasilRapat" placeholder="Tuliskan hasil rapat..."></textarea>
+                </div>
+
+                <div class="form-grup">
+                    <label for="inputMasalahRapat">Kendala / Masalah yang Dibahas:</label>
+                    <textarea id="inputMasalahRapat" placeholder="Tuliskan kendala rapat..."></textarea>
+                </div>
+
+                <div class="tombol" style="margin-top: 0;">
+                    <button class="btn-simpan" onclick="simpanCatatanCloud()">💾 Simpan Catatan & Rapat (Cloud)</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="control">
-        <div class="tanggal-wrapper">
-            <strong>Tanggal & Status Rapat:</strong>
-            <div class="tanggal-input-group">
-                <input type="date" id="tanggal" onchange="muatDataCloud()">
-                <select id="statusAdaRapat" class="status-rapat-select" onchange="ubahStatusRapatOpsi()">
-                    <option value="tidak">Tidak Ada Rapat</option>
-                    <option value="ada">Ada Rapat</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="info-rapat-badge" id="badgeRapat">
-            <span id="badgeLabel">Agenda</span> <b id="teksJudulRapat">Tidak ada agenda rapat khusus</b>
-        </div>
-
-        <div>
-            <strong>Status:</strong> <span id="statusMode" style="color: #2563eb; font-weight: bold;">Mode Absensi</span>
-        </div>
-    </div>
-
-    <!-- TAB 1: ABSENSI -->
-    <div id="tabAbsensi" class="tab-content aktif">
-        <div class="statistik">
-            <div class="stat"><span>HADIR</span><strong class="hadir" id="jumlahHadir">0</strong></div>
-            <div class="stat"><span>IZIN</span><strong class="izin" id="jumlahIzin">0</strong></div>
-            <div class="stat"><span>SAKIT</span><strong class="sakit" id="jumlahSakit">0</strong></div>
-            <div class="stat"><span>ALPA</span><strong class="alpa" id="jumlahAlpa">0</strong></div>
-        </div>
-
-        <div class="daftar">
-            <div class="judul-daftar">Daftar Kehadiran Anggota MPK</div>
-
-            <!-- 01 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">01</div>
-                    <div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 02 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">02</div>
-                    <div><div class="nama">Mutiara Khoirunnisa</div><div class="posisi">Wakil Ketua</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 03 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">03</div>
-                    <div><div class="nama">Alifia Nabila Putri</div><div class="posisi">Sekretaris 1</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 04 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">04</div>
-                    <div><div class="nama">Aisyah Firdasari</div><div class="posisi">Sekretaris 2</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 05 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">05</div>
-                    <div><div class="nama">Gina Qolbiyatul Latifah</div><div class="posisi">Bendahara</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 06 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">06</div>
-                    <div><div class="nama">M. Andra Ary Cesanov</div><div class="posisi">Komisi 1</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 07 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">07</div>
-                    <div><div class="nama">Andika Dwi Kuncoro</div><div class="posisi">Komisi 1</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 08 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">08</div>
-                    <div><div class="nama">Yoga Aditya Pratama</div><div class="posisi">Komisi 1</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 09 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">09</div>
-                    <div><div class="nama">Fahrel</div><div class="posisi">Komisi 1</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 10 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">10</div>
-                    <div><div class="nama">Darrel Dewangga Arjuna</div><div class="posisi">Komisi 2</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 11 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">11</div>
-                    <div><div class="nama">Hilal Lee Diar Sulaeman Malik</div><div class="posisi">Komisi 2</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 12 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">12</div>
-                    <div><div class="nama">Alfirza Nurhidayahtulloh Arrahman</div><div class="posisi">Komisi 2</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 13 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">13</div>
-                    <div><div class="nama">Cut Annisa Syarifuddin</div><div class="posisi">Komisi 3</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 14 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">14</div>
-                    <div><div class="nama">Muhamad Rizik</div><div class="posisi">Komisi 3</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-            <!-- 15 -->
-            <div class="orang">
-                <div class="identitas">
-                    <div class="nomor">15</div>
-                    <div><div class="nama">Aisy Galuh Khaerunnisa Putri</div><div class="posisi">Komisi 3</div></div>
-                </div>
-                <select class="status" onchange="updateJumlah()">
-                    <option value="Hadir" selected>Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                    <option value="Alpa">Alpa</option>
-                </select>
-            </div>
-
-        </div>
-
-        <div class="tombol">
-            <button class="btn-simpan" onclick="simpanAbsensiCloud()">💾 Simpan Absensi (Cloud)</button>
-        </div>
-    </div>
-
-    <!-- TAB 2: CATATAN -->
-    <div id="tabCatatan" class="tab-content">
-        <div class="catatan-container">
-            <div class="judul-daftar" style="padding: 0; border: none;">Notulen & Pembahasan Rapat</div>
-            
-            <div class="form-grup">
-                <label for="inputJudulRapat">Nama / Topik Rapat (Cth: Rapat Hari Santri):</label>
-                <input type="text" id="inputJudulRapat" placeholder="Masukkan nama rapat..." oninput="updateTampilanJudulLive()">
-            </div>
-
-            <div class="form-grup">
-                <label for="inputHasilRapat">Hasil Keputusan / Pembahasan Rapat:</label>
-                <textarea id="inputHasilRapat" placeholder="Tuliskan hasil rapat..."></textarea>
-            </div>
-
-            <div class="form-grup">
-                <label for="inputMasalahRapat">Kendala / Masalah yang Dibahas:</label>
-                <textarea id="inputMasalahRapat" placeholder="Tuliskan kendala rapat..."></textarea>
-            </div>
-
-            <div class="tombol" style="margin-top: 0;">
-                <button class="btn-simpan" onclick="simpanCatatanCloud()">💾 Simpan Catatan & Rapat (Cloud)</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
-// URL WEB APP GOOGLE SCRIPT SUDAH TERPASANG OTOMATIS DI SINI:
+// URL WEB APP GOOGLE SCRIPT:
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxP1aIzGC9RVT-kz7jSkac5maxBkU0uUmmi9iDDTr2jFrI6Lnhc_oXXbnu8FIfkknpT/exec";
 
 const tanggalInput = document.getElementById("tanggal");
@@ -352,6 +477,31 @@ const loadingOverlay = document.getElementById("loadingOverlay");
 
 const hariIni = new Date();
 tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
+
+// ================= SISTEM LOGIN =================
+function handleLogin(event) {
+    event.preventDefault();
+    let user = document.getElementById('username').value.trim();
+    let pass = document.getElementById('password').value.trim();
+    let err = document.getElementById('errorMsg');
+
+    if ((user === "OSISMPK" || user === "SISWASISWI") && pass === "SMKSTUNASHARAPAN") {
+        sessionStorage.setItem("userLoggedIn", "true");
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        muatDataCloud();
+    } else {
+        err.style.display = "block";
+    }
+}
+
+function handleLogout() {
+    sessionStorage.removeItem("userLoggedIn");
+    document.getElementById("main-app").style.display = "none";
+    document.getElementById("login-section").style.display = "block";
+    document.getElementById("loginForm").reset();
+    document.getElementById("errorMsg").style.display = "none";
+}
 
 function pindahTab(namaTab) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('aktif'));
@@ -520,7 +670,14 @@ function simpanCatatanCloud() {
     });
 }
 
-muatDataCloud();
+// Cek Sesi Login Saat Halaman Dimuat
+window.onload = function() {
+    if (sessionStorage.getItem("userLoggedIn") === "true") {
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        muatDataCloud();
+    }
+}
 </script>
 
 </body>
