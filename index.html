@@ -500,7 +500,6 @@ function berhasilScanQR(teks) {
         scannedTanggalTarget = tanggalInput.value; 
     }
 
-    // Matikan dan bersihkan kamera secara tuntas agar tombol bisa dipencet
     if (html5QrCodeScanner) {
         html5QrCodeScanner.stop().then(() => {
             html5QrCodeScanner.clear();
@@ -581,7 +580,7 @@ function muatDataCloud() {
         }
         updateJumlah();
 
-        const c = data.catatan;
+        const c = data.catatan || {};
         statusAdaRapat.value = c.statusRapat || "tidak";
         document.getElementById("inputJudulRapat").value = c.judul || "";
         document.getElementById("inputHasilRapat").value = c.hasil || "";
@@ -609,10 +608,13 @@ function simpanAbsensiCloud() {
 
     fetch(WEB_APP_URL, {
         method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify({ aksi: "simpan_absensi", tanggal: tanggalInput.value, dataAbsen: listAbsen })
     })
-    .then(res => res.json())
-    .then(res => {
+    .then(() => {
         loadingOverlay.style.display = "none";
         alert("Absensi berhasil disimpan ke Cloud Google Sheets! ☁️");
     })
@@ -636,10 +638,13 @@ function simpanAbsensiCloudSilent() {
 
     fetch(WEB_APP_URL, {
         method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify({ aksi: "simpan_absensi", tanggal: tanggalInput.value, dataAbsen: listAbsen })
     })
-    .then(res => res.json())
-    .then(res => {
+    .then(() => {
         loadingOverlay.style.display = "none";
         alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Google Drive! ✅");
         muatDataCloud(); 
@@ -654,6 +659,10 @@ function simpanCatatanCloud() {
     loadingOverlay.style.display = "flex";
     fetch(WEB_APP_URL, {
         method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify({
             aksi: "simpan_catatan",
             tanggal: tanggalInput.value,
@@ -663,8 +672,7 @@ function simpanCatatanCloud() {
             masalah: document.getElementById("inputMasalahRapat").value
         })
     })
-    .then(res => res.json())
-    .then(res => {
+    .then(() => {
         loadingOverlay.style.display = "none";
         alert("Catatan & Hasil Rapat berhasil disimpan ke Cloud! 📝☁️");
     })
