@@ -90,11 +90,11 @@ button.btn-simpan { background: #2563eb; color: white; border: none; padding: 12
 #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; }
 
 /* Modal QR Code / Scanner */
-#qrModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+#qrModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; position: relative; z-index: 1001; }
 .qr-modal-content h3 { margin-bottom: 8px; color: #2563eb; }
 #qrcodeContainer { display: flex; justify-content: center; margin: 10px 0; background: white; padding: 10px; border-radius: 8px; }
-.close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+.close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; position: relative; z-index: 1002; }
 
 /* CSS Mode Gelap */
 body.dark-mode { background: #0f172a; color: #f1f5f9; }
@@ -137,7 +137,7 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Jabatan / Posisi:</label>
                 <input type="text" id="inputPosisiAbsen" class="form-control-login" placeholder="Cth: Ketua / Komisi 1...">
             </div>
-            <button class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 10px; margin-bottom: 6px;">Konfirmasi Hadir & Simpan</button>
+            <button class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 12px; margin-bottom: 8px; position: relative; z-index: 1002;">Konfirmasi Hadir & Simpan</button>
         </div>
 
         <button class="close-qr-btn" onclick="tutupQRModal()">Tutup</button>
@@ -312,7 +312,7 @@ const tanggalInput = document.getElementById("tanggal");
 const statusAdaRapat = document.getElementById("statusAdaRapat");
 const loadingOverlay = document.getElementById("loadingOverlay");
 let html5QrCodeScanner = null;
-let scannedTanggalTarget = ""; // Menyimpan tanggal yang terbaca dari QR Code
+let scannedTanggalTarget = ""; 
 
 const hariIni = new Date();
 tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
@@ -489,7 +489,6 @@ function handleTombolQR() {
         modalTitle.textContent = "QR Code Absensi Tamu";
         modalDesc.textContent = "Tanggal Agenda: " + tanggalInput.value;
         
-        // Memasukkan tanggal spesifik ke dalam teks QR Code
         let teksQR = "MPK-HADIR-" + tanggalInput.value;
         new QRCode(container, {
             text: teksQR,
@@ -517,15 +516,17 @@ function scanFileQR(event) {
 }
 
 function berhasilScanQR(teks) {
+    // Matikan kamera terlebih dahulu secara mutlak agar elemen video tidak menghalangi tombol
     if (html5QrCodeScanner) {
-        html5QrCodeScanner.stop().catch(err => {});
+        html5QrCodeScanner.stop().then(() => {
+            html5QrCodeScanner.clear();
+        }).catch(err => {});
     }
     
-    // Validasi apakah format QR Code sesuai dan mengambil tanggal di dalamnya
     if (teks.startsWith("MPK-HADIR-")) {
         scannedTanggalTarget = teks.replace("MPK-HADIR-", "").trim();
     } else {
-        scannedTanggalTarget = tanggalInput.value; // Fallback ke tanggal aktif jika format lain
+        scannedTanggalTarget = tanggalInput.value; 
     }
 
     document.getElementById("reader").style.display = "none";
@@ -556,7 +557,6 @@ function prosesAbsenTamuOtomatis() {
     if (ditemukan) {
         updateJumlah();
         tutupQRModal();
-        // Otomatis ubah tanggal sistem ke tanggal QR code lalu simpan ke Cloud
         if (scannedTanggalTarget) {
             tanggalInput.value = scannedTanggalTarget;
         }
@@ -632,7 +632,6 @@ function simpanAbsensiCloud() {
     });
 }
 
-// Khusus untuk Tamu agar tersimpan otomatis ke cloud sesuai tanggal QR
 function simpanAbsensiCloudSilent() {
     loadingOverlay.style.display = "flex";
     const listAbsen = [];
@@ -653,7 +652,7 @@ function simpanAbsensiCloudSilent() {
     .then(res => {
         loadingOverlay.style.display = "none";
         alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Google Drive! ✅");
-        muatDataCloud(); // Refresh ulang data sesuai tanggal tersebut
+        muatDataCloud(); 
     })
     .catch(err => {
         loadingOverlay.style.display = "none";
