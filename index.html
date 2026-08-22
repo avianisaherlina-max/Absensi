@@ -152,7 +152,14 @@ input[type="date"] { padding: 9px 12px; border: 1px solid #d1d5db; border-radius
 .nomor { width: 38px; height: 38px; border-radius: 50%; background: #e0e7ff; color: #3730a3; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 .nama { font-weight: bold; margin-bottom: 4px; }
 .posisi { font-size: 13px; color: #6b7280; }
-select.status { padding: 9px 13px; border-radius: 9px; border: 1px solid #d1d5db; font-weight: bold; cursor: pointer; min-width: 120px; background: #fff; color: #1f2937; }
+
+/* CSS Kelas Warna Dropdown Status Kehadiran */
+select.status { padding: 9px 13px; border-radius: 9px; border: 1px solid #d1d5db; font-weight: bold; cursor: pointer; min-width: 120px; outline: none; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+select.status.opt-hadir { background-color: #dcfce7 !important; color: #166534 !important; border-color: #86efac !important; }
+select.status.opt-izin { background-color: #ffedd5 !important; color: #9a3412 !important; border-color: #fed7aa !important; }
+select.status.opt-sakit { background-color: #dbeafe !important; color: #1e40af !important; border-color: #bfdbfe !important; }
+select.status.opt-alpa { background-color: #fee2e2 !important; color: #991b1b !important; border-color: #fecaca !important; }
+
 .catatan-container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 20px; }
 .form-grup { display: flex; flex-direction: column; gap: 8px; }
 .form-grup label { font-weight: bold; color: #374151; }
@@ -187,13 +194,18 @@ body.dark-mode .posisi {
 body.dark-mode .form-control-login,
 body.dark-mode input[type="date"],
 body.dark-mode .status-rapat-select,
-body.dark-mode select.status,
 body.dark-mode .form-grup input,
 body.dark-mode .form-grup textarea {
     background: #0f172a;
     border-color: #334155;
     color: #f1f5f9;
 }
+/* Penyesuaian Warna Dropdown saat Dark Mode jika dipilih */
+body.dark-mode select.status.opt-hadir { background-color: #064e3b !important; color: #a7f3d0 !important; border-color: #059669 !important; }
+body.dark-mode select.status.opt-izin { background-color: #7c2d12 !important; color: #ffedd5 !important; border-color: #c2410c !important; }
+body.dark-mode select.status.opt-sakit { background-color: #1e3a8a !important; color: #bfdbfe !important; border-color: #2563eb !important; }
+body.dark-mode select.status.opt-alpa { background-color: #7f1d1d !important; color: #fee2e2 !important; border-color: #dc2626 !important; }
+
 body.dark-mode .form-group-login label,
 body.dark-mode .form-grup label,
 body.dark-mode .tanggal-wrapper strong,
@@ -323,7 +335,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">01</div>
                         <div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -337,7 +349,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">02</div>
                         <div><div class="nama">Mutiara Khoirunnisa</div><div class="posisi">Wakil Ketua</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -351,7 +363,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">03</div>
                         <div><div class="nama">Alifia Nabila Putri</div><div class="posisi">Sekretaris 1</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -365,7 +377,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">04</div>
                         <div><div class="nama">Aisyah Firdasari</div><div class="posisi">Sekretaris 2</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -379,7 +391,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">05</div>
                         <div><div class="nama">Gina Qolbiyatul Latifah</div><div class="posisi">Bendahara</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -393,7 +405,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">06</div>
                         <div><div class="nama">M. Andra Ary Cesanov</div><div class="posisi">Komisi 1</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -407,7 +419,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">07</div>
                         <div><div class="nama">Andika Dwi Kuncoro</div><div class="posisi">Komisi 1</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -421,7 +433,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">08</div>
                         <div><div class="nama">Yoga Aditya Pratama</div><div class="posisi">Komisi 1</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -435,7 +447,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">09</div>
                         <div><div class="nama">Fahrel</div><div class="posisi">Komisi 1</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -449,7 +461,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">10</div>
                         <div><div class="nama">Darrel Dewangga Arjuna</div><div class="posisi">Komisi 2</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -463,7 +475,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">11</div>
                         <div><div class="nama">Hilal Lee Diar Sulaeman Malik</div><div class="posisi">Komisi 2</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -477,7 +489,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">12</div>
                         <div><div class="nama">Alfirza Nurhidayahtulloh Arrahman</div><div class="posisi">Komisi 2</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -491,7 +503,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">13</div>
                         <div><div class="nama">Cut Annisa Syarifuddin</div><div class="posisi">Komisi 3</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -505,7 +517,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">14</div>
                         <div><div class="nama">Muhamad Rizik</div><div class="posisi">Komisi 3</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -519,7 +531,7 @@ body.dark-mode .dark-mode-btn:hover {
                         <div class="nomor">15</div>
                         <div><div class="nama">Aisy Galuh Khaerunnisa Putri</div><div class="posisi">Komisi 3</div></div>
                     </div>
-                    <select class="status" onchange="updateJumlah()">
+                    <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
                         <option value="Hadir" selected>Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
@@ -573,6 +585,20 @@ const loadingOverlay = document.getElementById("loadingOverlay");
 
 const hariIni = new Date();
 tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
+
+// ================= FITUR WARNA DROPDOWN STATUS =================
+function updateWarnaDropdown(selectElement) {
+    selectElement.classList.remove("opt-hadir", "opt-izin", "opt-sakit", "opt-alpa");
+    if (selectElement.value === "Hadir") {
+        selectElement.classList.add("opt-hadir");
+    } else if (selectElement.value === "Izin") {
+        selectElement.classList.add("opt-izin");
+    } else if (selectElement.value === "Sakit") {
+        selectElement.classList.add("opt-sakit");
+    } else if (selectElement.value === "Alpa") {
+        selectElement.classList.add("opt-alpa");
+    }
+}
 
 // ================= FITUR MODE GELAP =================
 function toggleDarkMode() {
@@ -686,10 +712,16 @@ function muatDataCloud() {
         const semuaStatus = document.querySelectorAll(".status");
         if (data.absen && data.absen.length > 0) {
             semuaStatus.forEach((status, idx) => {
-                if (data.absen[idx]) status.value = data.absen[idx].status;
+                if (data.absen[idx]) {
+                    status.value = data.absen[idx].status;
+                    updateWarnaDropdown(status);
+                }
             });
         } else {
-            semuaStatus.forEach(status => status.value = "Hadir");
+            semuaStatus.forEach(status => {
+                status.value = "Hadir";
+                updateWarnaDropdown(status);
+            });
         }
         updateJumlah();
 
@@ -786,6 +818,11 @@ function simpanCatatanCloud() {
         alert("Gagal menyimpan catatan.");
     });
 }
+
+// Inisialisasi Warna Dropdown Saat Pertama Kali Halaman Dimuat
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".status").forEach(status => updateWarnaDropdown(status));
+});
 
 // Cek Sesi Login Saat Halaman Dimuat
 window.onload = function() {
