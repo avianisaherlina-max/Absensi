@@ -128,7 +128,7 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
         
         <!-- Form Input Otomatis Setelah Scan -->
         <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px;">
-            <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;">✅ Scan Berhasil! Masukkan identitas Anda:</div>
+            <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Masukkan identitas Anda:</div>
             <div style="margin-bottom: 6px;">
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Nama Lengkap:</label>
                 <input type="text" id="inputNamaAbsen" class="form-control-login" placeholder="Ketik nama Anda...">
@@ -312,6 +312,7 @@ const tanggalInput = document.getElementById("tanggal");
 const statusAdaRapat = document.getElementById("statusAdaRapat");
 const loadingOverlay = document.getElementById("loadingOverlay");
 let html5QrCodeScanner = null;
+let scannedTanggalTarget = ""; // Menyimpan tanggal yang terbaca dari QR Code
 
 const hariIni = new Date();
 tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
@@ -466,7 +467,7 @@ function handleTombolQR() {
 
     if (role === "tamu") {
         modalTitle.textContent = "Scan Barcode Kehadiran";
-        modalDesc.textContent = "Arahkan kamera ke layar atau upload gambar QR.";
+        modalDesc.textContent = "Arahkan kamera ke QR Code panitia.";
         readerDiv.style.display = "block";
         uploadSection.style.display = "block";
         modal.style.display = "flex";
@@ -486,8 +487,9 @@ function handleTombolQR() {
 
     } else {
         modalTitle.textContent = "QR Code Absensi Tamu";
-        modalDesc.textContent = "Scan QR ini menggunakan menu Scan Tamu.";
+        modalDesc.textContent = "Tanggal Agenda: " + tanggalInput.value;
         
+        // Memasukkan tanggal spesifik ke dalam teks QR Code
         let teksQR = "MPK-HADIR-" + tanggalInput.value;
         new QRCode(container, {
             text: teksQR,
@@ -518,9 +520,17 @@ function berhasilScanQR(teks) {
     if (html5QrCodeScanner) {
         html5QrCodeScanner.stop().catch(err => {});
     }
+    
+    // Validasi apakah format QR Code sesuai dan mengambil tanggal di dalamnya
+    if (teks.startsWith("MPK-HADIR-")) {
+        scannedTanggalTarget = teks.replace("MPK-HADIR-", "").trim();
+    } else {
+        scannedTanggalTarget = tanggalInput.value; // Fallback ke tanggal aktif jika format lain
+    }
+
     document.getElementById("reader").style.display = "none";
     document.getElementById("uploadScanSection").style.display = "none";
-    document.getElementById("modalDesc").textContent = "QR Code berhasil terbaca!";
+    document.getElementById("modalDesc").textContent = "QR Code berhasil terbaca! (Agenda: " + scannedTanggalTarget + ")";
     document.getElementById("formScanResult").style.display = "block";
 }
 
@@ -546,7 +556,10 @@ function prosesAbsenTamuOtomatis() {
     if (ditemukan) {
         updateJumlah();
         tutupQRModal();
-        // Langsung simpan ke cloud secara otomatis setelah tamu konfirmasi hadir
+        // Otomatis ubah tanggal sistem ke tanggal QR code lalu simpan ke Cloud
+        if (scannedTanggalTarget) {
+            tanggalInput.value = scannedTanggalTarget;
+        }
         simpanAbsensiCloudSilent();
     } else {
         alert("Nama atau posisi tidak ditemukan dalam daftar anggota MPK.");
@@ -619,7 +632,7 @@ function simpanAbsensiCloud() {
     });
 }
 
-// Khusus untuk Tamu agar tersimpan otomatis ke cloud tanpa tombol manual
+// Khusus untuk Tamu agar tersimpan otomatis ke cloud sesuai tanggal QR
 function simpanAbsensiCloudSilent() {
     loadingOverlay.style.display = "flex";
     const listAbsen = [];
@@ -639,7 +652,8 @@ function simpanAbsensiCloudSilent() {
     .then(res => res.json())
     .then(res => {
         loadingOverlay.style.display = "none";
-        alert("Absensi berhasil dicatat dan tersimpan otomatis ke Google Drive! ✅");
+        alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Google Drive! ✅");
+        muatDataCloud(); // Refresh ulang data sesuai tanggal tersebut
     })
     .catch(err => {
         loadingOverlay.style.display = "none";
