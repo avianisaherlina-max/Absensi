@@ -6,6 +6,8 @@
 <title>Sistem Rapat & Absensi MPK (Cloud)</title>
 <!-- Pustaka QR Code Generator -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Pustaka HTML5 QR Code Scanner untuk Kamera HP/Laptop -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
 body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padding: 25px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
@@ -176,6 +178,7 @@ input[type="date"] { padding: 9px 12px; border: 1px solid #d1d5db; border-radius
 /* CSS Kelas Warna Dropdown Status Kehadiran */
 select.status { padding: 9px 13px; border-radius: 9px; border: 1px solid #d1d5db; font-weight: bold; cursor: pointer; min-width: 120px; outline: none; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
 select.status:disabled { background-color: #e5e7eb !important; color: #6b7280 !important; border-color: #d1d5db !important; cursor: not-allowed; opacity: 0.8; }
+select.status.opt-kosong { background-color: #f3f4f6 !important; color: #4b5563 !important; border-color: #d1d5db !important; }
 select.status.opt-hadir { background-color: #dcfce7 !important; color: #166534 !important; border-color: #86efac !important; }
 select.status.opt-izin { background-color: #ffedd5 !important; color: #9a3412 !important; border-color: #fed7aa !important; }
 select.status.opt-sakit { background-color: #dbeafe !important; color: #1e40af !important; border-color: #bfdbfe !important; }
@@ -193,10 +196,10 @@ button.btn-simpan:hover { background: #1d4ed8; }
 
 /* Modal QR Code / Scanner */
 #qrModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-.qr-modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 350px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-.qr-modal-content h3 { margin-bottom: 15px; color: #2563eb; }
+.qr-modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 380px; width: 90%; box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+.qr-modal-content h3 { margin-bottom: 12px; color: #2563eb; }
 #qrcodeContainer { display: flex; justify-content: center; margin: 15px 0; }
-.close-qr-btn { margin-top: 15px; background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.close-qr-btn { margin-top: 15px; background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
 .close-qr-btn:hover { background: #b91c1c; }
 
 /* CSS FITUR MODE GELAP (DARK MODE) */
@@ -232,6 +235,7 @@ body.dark-mode .form-grup textarea {
     color: #f1f5f9;
 }
 body.dark-mode select.status:disabled { background-color: #334155 !important; color: #94a3b8 !important; border-color: #475569 !important; }
+body.dark-mode select.status.opt-kosong { background-color: #334155 !important; color: #94a3b8 !important; border-color: #475569 !important; }
 body.dark-mode select.status.opt-hadir { background-color: #064e3b !important; color: #a7f3d0 !important; border-color: #059669 !important; }
 body.dark-mode select.status.opt-izin { background-color: #7c2d12 !important; color: #ffedd5 !important; border-color: #c2410c !important; }
 body.dark-mode select.status.opt-sakit { background-color: #1e3a8a !important; color: #bfdbfe !important; border-color: #2563eb !important; }
@@ -291,9 +295,25 @@ body.dark-mode .dark-mode-btn:hover {
 <!-- MODAL QR CODE / SCANNER -->
 <div id="qrModal">
     <div class="qr-modal-content">
-        <h3 id="modalTitle">QR Code Absensi Tamu</h3>
-        <p id="modalDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">Scan QR ini untuk melakukan presensi tamu.</p>
+        <h3 id="modalTitle">QR Code Absensi</h3>
+        <p id="modalDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">Arahkan kamera ke QR Code panitia.</p>
         <div id="qrcodeContainer"></div>
+        <div id="reader" style="width: 100%; display: none; margin-bottom: 10px;"></div>
+        
+        <!-- Form Input Otomatis Setelah Scan untuk Tamu -->
+        <div id="formScanResult" style="display: none; text-align: left; margin-top: 10px;">
+            <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 8px;">✅ Scan Berhasil! Masukkan identitas Anda:</div>
+            <div style="margin-bottom: 8px;">
+                <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 3px;">Nama Lengkap:</label>
+                <input type="text" id="inputNamaAbsen" class="form-control-login" placeholder="Ketik nama Anda...">
+            </div>
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 3px;">Jabatan / Posisi:</label>
+                <input type="text" id="inputPosisiAbsen" class="form-control-login" placeholder="Cth: Ketua / Komisi 1...">
+            </div>
+            <button class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 10px;">Konfirmasi Hadir</button>
+        </div>
+
         <button class="close-qr-btn" onclick="tutupQRModal()">Tutup</button>
     </div>
 </div>
@@ -379,7 +399,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Giyas Nabil Qurisqi</div><div class="posisi">Ketua</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -393,7 +414,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Mutiara Khoirunnisa</div><div class="posisi">Wakil Ketua</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -407,7 +429,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Alifia Nabila Putri</div><div class="posisi">Sekretaris 1</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -421,7 +444,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Aisyah Firdasari</div><div class="posisi">Sekretaris 2</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -435,7 +459,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Gina Qolbiyatul Latifah</div><div class="posisi">Bendahara</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -449,7 +474,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">M. Andra Ary Cesanov</div><div class="posisi">Komisi 1</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -463,7 +489,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Andika Dwi Kuncoro</div><div class="posisi">Komisi 1</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -477,7 +504,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Yoga Aditya Pratama</div><div class="posisi">Komisi 1</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -491,7 +519,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Fahrel</div><div class="posisi">Komisi 1</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -505,7 +534,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Darrel Dewangga Arjuna</div><div class="posisi">Komisi 2</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -519,7 +549,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Hilal Lee Diar Sulaeman Malik</div><div class="posisi">Komisi 2</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -533,7 +564,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Alfirza Nurhidayahtulloh Arrahman</div><div class="posisi">Komisi 2</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -547,7 +579,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Cut Annisa Syarifuddin</div><div class="posisi">Komisi 3</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -561,7 +594,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Muhamad Rizik</div><div class="posisi">Komisi 3</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -575,7 +609,8 @@ body.dark-mode .dark-mode-btn:hover {
                         <div><div class="nama">Aisy Galuh Khaerunnisa Putri</div><div class="posisi">Komisi 3</div></div>
                     </div>
                     <select class="status" onchange="updateJumlah(); updateWarnaDropdown(this);">
-                        <option value="Hadir" selected>Hadir</option>
+                        <option value="" selected disabled>-- Pilih --</option>
+                        <option value="Hadir">Hadir</option>
                         <option value="Izin">Izin</option>
                         <option value="Sakit">Sakit</option>
                         <option value="Alpa">Alpa</option>
@@ -625,14 +660,17 @@ const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxP1aIzGC9RVT-kz7jS
 const tanggalInput = document.getElementById("tanggal");
 const statusAdaRapat = document.getElementById("statusAdaRapat");
 const loadingOverlay = document.getElementById("loadingOverlay");
+let html5QrCodeScanner = null;
 
 const hariIni = new Date();
 tanggalInput.value = `${hariIni.getFullYear()}-${String(hariIni.getMonth() + 1).padStart(2, "0")}-${String(hariIni.getDate()).padStart(2, "0")}`;
 
 // ================= FITUR WARNA DROPDOWN STATUS =================
 function updateWarnaDropdown(selectElement) {
-    selectElement.classList.remove("opt-hadir", "opt-izin", "opt-sakit", "opt-alpa");
-    if (selectElement.value === "Hadir") {
+    selectElement.classList.remove("opt-kosong", "opt-hadir", "opt-izin", "opt-sakit", "opt-alpa");
+    if (!selectElement.value) {
+        selectElement.classList.add("opt-kosong");
+    } else if (selectElement.value === "Hadir") {
         selectElement.classList.add("opt-hadir");
     } else if (selectElement.value === "Izin") {
         selectElement.classList.add("opt-izin");
@@ -658,7 +696,6 @@ function toggleDarkMode() {
     }
 }
 
-// Cek Preferensi Dark Mode Tersimpan
 if (localStorage.getItem("mpkDarkMode") === "enabled") {
     document.getElementById("bodyTag").classList.add("dark-mode");
     document.getElementById("darkModeBtn").textContent = "☀️ Mode Terang";
@@ -672,24 +709,16 @@ function terapkanHakAksesUI() {
     const containerSimpanAbsen = document.getElementById("containerBtnSimpanAbsen");
 
     if (role === "tamu") {
-        // Sembunyikan tab Hasil & Masalah Rapat
         if (btnTabCatatan) btnTabCatatan.style.display = "none";
-        
-        // Ubah tombol QR menjadi Scan Barcode
         if (btnAksiQR) {
             btnAksiQR.textContent = "Scan";
             btnAksiQR.title = "Scan Barcode Kehadiran";
         }
-
-        // Matikan pilihan/dropdown absen agar read-only (tidak bisa diubah tamu)
         document.querySelectorAll(".status").forEach(select => {
             select.disabled = true;
         });
-
-        // Sembunyikan tombol simpan absen untuk tamu
         if (containerSimpanAbsen) containerSimpanAbsen.style.display = "none";
     } else {
-        // Tampilkan kembali jika admin
         if (btnTabCatatan) btnTabCatatan.style.display = "block";
         if (btnAksiQR) {
             btnAksiQR.textContent = "qr";
@@ -794,30 +823,53 @@ function updateTampilanJudulLive() {
     }
 }
 
-// ================= FITUR TOMBOL (GENERATE QR / SCAN BARCODE) =================
+// ================= FITUR KAMERA SCANNER & GENERATE QR =================
 function handleTombolQR() {
     const role = sessionStorage.getItem("userRole");
     const modal = document.getElementById("qrModal");
     const container = document.getElementById("qrcodeContainer");
+    const readerDiv = document.getElementById("reader");
+    const formScanResult = document.getElementById("formScanResult");
     const modalTitle = document.getElementById("modalTitle");
     const modalDesc = document.getElementById("modalDesc");
     
-    container.innerHTML = ""; // Bersihkan kontainer modal
+    container.innerHTML = "";
+    readerDiv.style.display = "none";
+    formScanResult.style.display = "none";
 
     if (role === "tamu") {
-        // FITUR SCAN BARCODE UNTUK TAMU
+        // FITUR SCANNER KAMERA UNTUK TAMU
         modalTitle.textContent = "Scan Barcode Kehadiran";
         modalDesc.textContent = "Arahkan kamera ke QR Code panitia untuk absen.";
+        readerDiv.style.display = "block";
+        modal.style.display = "flex";
+
+        // Inisialisasi HTML5 Qrcode Scanner
+        if (!html5QrCodeScanner) {
+            html5QrCodeScanner = new Html5Qrcode("reader");
+        }
         
-        // Contoh tampilan sederhana atau integrasi pemindai kamera
-        container.innerHTML = `
-            <div style="padding: 20px; background: #f3f4f6; border-radius: 10px; color: #374151; font-size: 14px;">
-                📷 <b>Kamera Scanner Aktif</b><br>
-                <span style="font-size: 12px; color: #6b7280;">Fitur pemindai siap mendeteksi barcode panitia MPK.</span>
-            </div>
-        `;
+        html5QrCodeScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            (decodedText, decodedResult) => {
+                // Berhasil Scan QR Code
+                html5QrCodeScanner.stop().then(() => {
+                    readerDiv.style.display = "none";
+                    modalDesc.textContent = "QR Code berhasil terbaca!";
+                    formScanResult.style.display = "block";
+                }).catch(err => { console.error(err); });
+            },
+            (errorMessage) => {
+                // Mengabaikan error saat pemindaian berlangsung terus-menerus
+            }
+        ).catch(err => {
+            modalDesc.textContent = "Gagal mengakses kamera. Pastikan izin kamera aktif.";
+            console.error(err);
+        });
+
     } else {
-        // FITUR GENERATE QR CODE UNTUK ADMIN (OSIS/MPK)
+        // FITUR GENERATE QR CODE UNTUK ADMIN
         modalTitle.textContent = "QR Code Absensi Tamu";
         modalDesc.textContent = "Scan QR ini untuk melakukan presensi tamu.";
         
@@ -827,12 +879,47 @@ function handleTombolQR() {
             width: 180,
             height: 180
         });
+        modal.style.display = "flex";
     }
-    
-    modal.style.display = "flex";
+}
+
+function prosesAbsenTamuOtomatis() {
+    const namaInput = document.getElementById("inputNamaAbsen").value.trim().toLowerCase();
+    const posisiInput = document.getElementById("inputPosisiAbsen").value.trim().toLowerCase();
+
+    if (!namaInput) {
+        alert("Mohon masukkan nama Anda!");
+        return;
+    }
+
+    let ditemukan = false;
+    document.querySelectorAll(".orang").forEach(orang => {
+        let namaItem = orang.querySelector(".nama").textContent.trim().toLowerCase();
+        let posisiItem = orang.querySelector(".posisi").textContent.trim().toLowerCase();
+
+        // Mencocokkan nama atau posisi yang dimasukkan
+        if (namaItem.includes(namaInput) || (posisiInput && posisiItem.includes(posisiInput))) {
+            let selectStatus = orang.querySelector(".status");
+            selectStatus.value = "Hadir";
+            updateWarnaDropdown(selectStatus);
+            ditemukan = true;
+        }
+    });
+
+    if (ditemukan) {
+        updateJumlah();
+        alert("Absensi berhasil dicatat! Nama Anda telah diubah menjadi Hadir.");
+        tutupQRModal();
+        simpanAbsensiCloud(); // Auto simpan ke cloud setelah absen via scan
+    } else {
+        alert("Nama atau posisi tidak ditemukan dalam daftar anggota MPK. Mohon periksa kembali ejaan nama Anda.");
+    }
 }
 
 function tutupQRModal() {
+    if (html5QrCodeScanner) {
+        html5QrCodeScanner.stop().catch(err => {});
+    }
     document.getElementById("qrModal").style.display = "none";
 }
 
@@ -847,14 +934,16 @@ function muatDataCloud() {
         const semuaStatus = document.querySelectorAll(".status");
         if (data.absen && data.absen.length > 0) {
             semuaStatus.forEach((status, idx) => {
-                if (data.absen[idx]) {
+                if (data.absen[idx] && data.absen[idx].status) {
                     status.value = data.absen[idx].status;
-                    updateWarnaDropdown(status);
+                } else {
+                    status.value = "";
                 }
+                updateWarnaDropdown(status);
             });
         } else {
             semuaStatus.forEach(status => {
-                status.value = "Hadir";
+                status.value = "";
                 updateWarnaDropdown(status);
             });
         }
@@ -899,7 +988,7 @@ function simpanAbsensiCloud() {
         listAbsen.push({
             nama: orang.querySelector(".nama").textContent.trim(),
             posisi: orang.querySelector(".posisi").textContent.trim(),
-            status: status.value
+            status: status.value || ""
         });
     });
 
