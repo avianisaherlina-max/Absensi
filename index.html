@@ -840,7 +840,7 @@ function handleTombolQR() {
     if (role === "tamu") {
         // FITUR SCANNER KAMERA UNTUK TAMU
         modalTitle.textContent = "Scan Barcode Kehadiran";
-        modalDesc.textContent = "Arahkan kamera ke QR Code panitia untuk absen.";
+        modalDesc.textContent = "Arahkan kamera ke QR Code panitia.";
         readerDiv.style.display = "block";
         modal.style.display = "flex";
 
@@ -851,9 +851,13 @@ function handleTombolQR() {
         
         html5QrCodeScanner.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 220, height: 220 } },
+            { 
+                fps: 15, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0
+            },
             (decodedText, decodedResult) => {
-                // Berhasil Scan QR Code
+                // Berhasil Scan QR Code (Apapun isinya, langsung buka form input)
                 html5QrCodeScanner.stop().then(() => {
                     readerDiv.style.display = "none";
                     modalDesc.textContent = "QR Code berhasil terbaca!";
@@ -861,23 +865,26 @@ function handleTombolQR() {
                 }).catch(err => { console.error(err); });
             },
             (errorMessage) => {
-                // Mengabaikan error saat pemindaian berlangsung terus-menerus
+                // Abaikan error frame pencarian rutin
             }
         ).catch(err => {
-            modalDesc.textContent = "Gagal mengakses kamera. Pastikan izin kamera aktif.";
+            modalDesc.textContent = "Gagal mengakses kamera. Pastikan izin kamera aktif pada browser.";
             console.error(err);
         });
 
     } else {
-        // FITUR GENERATE QR CODE UNTUK ADMIN
+        // FITUR GENERATE QR CODE RINGKAS UNTUK ADMIN
         modalTitle.textContent = "QR Code Absensi Tamu";
-        modalDesc.textContent = "Scan QR ini untuk melakukan presensi tamu.";
+        modalDesc.textContent = "Scan QR ini menggunakan menu Scan Tamu.";
         
-        let urlAbsenTamu = window.location.href.split('?')[0] + "?tamu=hadir&tanggal=" + tanggalInput.value;
+        let teksQR = "MPK-HADIR-VALID-" + tanggalInput.value;
         new QRCode(container, {
-            text: urlAbsenTamu,
-            width: 180,
-            height: 180
+            text: teksQR,
+            width: 190,
+            height: 190,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
         modal.style.display = "flex";
     }
@@ -1038,7 +1045,7 @@ function simpanCatatanCloud() {
         alert("Catatan & Hasil Rapat berhasil disimpan ke Cloud! 📝☁️");
     })
     .catch(err => {
-        loadingOverlay.style.display = "none";
+        loadingOverlay.style.display, loadingOverlay.style.display = "none";
         alert("Gagal menyimpan catatan.");
     });
 }
