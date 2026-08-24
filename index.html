@@ -123,14 +123,31 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
         </div>
         
         <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px;">
-            <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Masukkan identitas Anda:</div>
+            <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Pilih nama Anda:</div>
             <div style="margin-bottom: 6px;">
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Nama Lengkap:</label>
-                <input type="text" id="inputNamaAbsen" class="form-control-login" placeholder="Ketik nama Anda...">
+                <select id="inputNamaAbsen" class="form-control-login" onchange="pilihNamaOtomatisJabatan(this.value)">
+                    <option value="" disabled selected>-- Pilih Nama Anggota --</option>
+                    <option value="Giyas Nabil Qurisqi" data-posisi="Ketua">Giyas Nabil Qurisqi (Ketua)</option>
+                    <option value="Mutiara Khoirunnisa" data-posisi="Wakil Ketua">Mutiara Khoirunnisa (Wakil Ketua)</option>
+                    <option value="Alifia Nabila Putri" data-posisi="Sekretaris 1">Alifia Nabila Putri (Sekretaris 1)</option>
+                    <option value="Aisyah Firdasari" data-posisi="Sekretaris 2">Aisyah Firdasari (Sekretaris 2)</option>
+                    <option value="Gina Qolbiyatul Latifah" data-posisi="Bendahara">Gina Qolbiyatul Latifah (Bendahara)</option>
+                    <option value="M. Andra Ary Cesanov" data-posisi="Komisi 1">M. Andra Ary Cesanov (Komisi 1)</option>
+                    <option value="Andika Dwi Kuncoro" data-posisi="Komisi 1">Andika Dwi Kuncoro (Komisi 1)</option>
+                    <option value="Yoga Aditya Pratama" data-posisi="Komisi 1">Yoga Aditya Pratama (Komisi 1)</option>
+                    <option value="Fahrel" data-posisi="Komisi 1">Fahrel (Komisi 1)</option>
+                    <option value="Darrel Dewangga Arjuna" data-posisi="Komisi 2">Darrel Dewangga Arjuna (Komisi 2)</option>
+                    <option value="Hilal Lee Diar Sulaeman Malik" data-posisi="Komisi 2">Hilal Lee Diar Sulaeman Malik (Komisi 2)</option>
+                    <option value="Alfirza Nurhidayahtulloh Arrahman" data-posisi="Komisi 2">Alfirza Nurhidayahtulloh Arrahman (Komisi 2)</option>
+                    <option value="Cut Annisa Syarifuddin" data-posisi="Komisi 3">Cut Annisa Syarifuddin (Komisi 3)</option>
+                    <option value="Muhamad Rizik" data-posisi="Komisi 3">Muhamad Rizik (Komisi 3)</option>
+                    <option value="Aisy Galuh Khaerunnisa Putri" data-posisi="Komisi 3">Aisy Galuh Khaerunnisa Putri (Komisi 3)</option>
+                </select>
             </div>
             <div style="margin-bottom: 10px;">
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Jabatan / Posisi:</label>
-                <input type="text" id="inputPosisiAbsen" class="form-control-login" placeholder="Cth: Ketua / Komisi 1...">
+                <input type="text" id="inputPosisiAbsen" class="form-control-login" placeholder="Jabatan terisi otomatis..." readonly style="background-color: #f3f4f6;">
             </div>
             <button class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 12px; margin-bottom: 8px;">Konfirmasi Hadir & Simpan</button>
         </div>
@@ -524,11 +541,18 @@ function tampilkanFormHasilScan() {
     document.getElementById("formScanResult").style.display = "block";
 }
 
+function pilihNamaOtomatisJabatan(namaTerpilih) {
+    const selectElem = document.getElementById("inputNamaAbsen");
+    const selectedOption = selectElem.options[selectElem.selectedIndex];
+    const posisi = selectedOption.getAttribute("data-posisi") || "";
+    document.getElementById("inputPosisiAbsen").value = posisi;
+}
+
 function prosesAbsenTamuOtomatis() {
     const namaInput = document.getElementById("inputNamaAbsen").value.trim().toLowerCase();
     const posisiInput = document.getElementById("inputPosisiAbsen").value.trim().toLowerCase();
 
-    if (!namaInput) { alert("Mohon masukkan nama Anda!"); return; }
+    if (!namaInput) { alert("Mohon pilih nama Anda!"); return; }
 
     let ditemukan = false;
     document.querySelectorAll(".orang").forEach(orang => {
