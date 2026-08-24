@@ -26,9 +26,9 @@ body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padd
 .login-header p { font-size: 14px; color: #6b7280; }
 .form-group-login { margin-bottom: 18px; }
 .form-group-login label { display: block; font-size: 14px; font-weight: bold; color: #374151; margin-bottom: 6px; }
-.form-control-login { width: 100%; padding: 11px 14px; border: 1px solid #d1d5db; border-radius: 9px; font-size: 14px; outline: none; background: #fff; color: #1f2937; position: relative; z-index: 1005; }
+.form-control-login { width: 100%; padding: 11px 14px; border: 1px solid #d1d5db; border-radius: 9px; font-size: 14px; outline: none; background: #fff; color: #1f2937; position: relative; z-index: 10; }
 .form-control-login:focus { border-color: #2563eb; }
-.login-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 9px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; position: relative; z-index: 1005; }
+.login-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 9px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; position: relative; z-index: 10; }
 .login-btn:hover { background: #1d4ed8; }
 .tamu-btn { width: 100%; background: #10b981; color: white; border: none; padding: 12px; border-radius: 9px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
 .tamu-btn:hover { background: #059669; }
@@ -85,14 +85,14 @@ select.status.opt-alpa { background-color: #fee2e2 !important; color: #991b1b !i
 .form-grup textarea { resize: vertical; min-height: 150px; }
 .tombol { margin-top: 20px; display: flex; justify-content: flex-end; }
 button.btn-simpan { background: #2563eb; color: white; border: none; padding: 12px 22px; border-radius: 9px; font-weight: bold; cursor: pointer; }
-#loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; }
+#loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 99999; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; }
 
-/* Perbaikan Modal QR Code & Tombol Agar Bisa Dipencet */
-#qrModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 1000; margin: auto; }
+/* Perbaikan Modal QR Code & Layer Tombol */
+#qrModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
+.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 10000; margin: auto; }
 .qr-modal-content h3 { margin-bottom: 8px; color: #2563eb; }
 #qrcodeContainer { display: flex; justify-content: center; margin: 10px 0; background: white; padding: 10px; border-radius: 8px; }
-.close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; position: relative; z-index: 1005; }
+.close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; position: relative; z-index: 10005; }
 
 /* CSS Mode Gelap */
 body.dark-mode { background: #0f172a; color: #f1f5f9; }
@@ -119,14 +119,14 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
 
         <div id="uploadScanSection" style="display: none; margin-bottom: 8px; text-align: left;">
             <label style="font-size: 12px; font-weight: bold; color: #4b5563; display: block; margin-bottom: 3px;">Atau Upload Screenshot QR Code:</label>
-            <input type="file" id="qrFileInput" accept="image/*" onchange="scanFileQR(event)" style="font-size: 12px; width: 100%; position: relative; z-index: 1005;">
+            <input type="file" id="qrFileInput" accept="image/*" onchange="scanFileQR(event)" style="font-size: 12px; width: 100%; position: relative; z-index: 10005;">
         </div>
         
-        <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px;">
+        <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px; position: relative; z-index: 10005;">
             <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Pilih nama Anda:</div>
             <div style="margin-bottom: 6px;">
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Nama Lengkap:</label>
-                <select id="inputNamaAbsen" class="form-control-login" onchange="pilihNamaOtomatisJabatan(this.value)">
+                <select id="inputNamaAbsen" class="form-control-login" onchange="pilihNamaOtomatisJabatan(this)">
                     <option value="" disabled selected>-- Pilih Nama Anggota --</option>
                     <option value="Giyas Nabil Qurisqi" data-posisi="Ketua">Giyas Nabil Qurisqi (Ketua)</option>
                     <option value="Mutiara Khoirunnisa" data-posisi="Wakil Ketua">Mutiara Khoirunnisa (Wakil Ketua)</option>
@@ -149,10 +149,10 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
                 <label style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Jabatan / Posisi:</label>
                 <input type="text" id="inputPosisiAbsen" class="form-control-login" placeholder="Jabatan terisi otomatis..." readonly style="background-color: #f3f4f6;">
             </div>
-            <button class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 12px; margin-bottom: 8px;">Konfirmasi Hadir & Simpan</button>
+            <button type="button" class="login-btn" onclick="prosesAbsenTamuOtomatis()" style="margin-top: 0; padding: 12px; margin-bottom: 8px; position: relative; z-index: 10006;">Konfirmasi Hadir & Simpan</button>
         </div>
 
-        <button class="close-qr-btn" onclick="tutupQRModal()">Tutup</button>
+        <button type="button" class="close-qr-btn" onclick="tutupQRModal()">Tutup</button>
     </div>
 </div>
 
@@ -541,25 +541,28 @@ function tampilkanFormHasilScan() {
     document.getElementById("formScanResult").style.display = "block";
 }
 
-function pilihNamaOtomatisJabatan(namaTerpilih) {
-    const selectElem = document.getElementById("inputNamaAbsen");
+function pilihNamaOtomatisJabatan(selectElem) {
     const selectedOption = selectElem.options[selectElem.selectedIndex];
     const posisi = selectedOption.getAttribute("data-posisi") || "";
     document.getElementById("inputPosisiAbsen").value = posisi;
 }
 
 function prosesAbsenTamuOtomatis() {
-    const namaInput = document.getElementById("inputNamaAbsen").value.trim().toLowerCase();
+    const selectNama = document.getElementById("inputNamaAbsen");
+    const namaInput = selectNama.value.trim().toLowerCase();
     const posisiInput = document.getElementById("inputPosisiAbsen").value.trim().toLowerCase();
 
-    if (!namaInput) { alert("Mohon pilih nama Anda!"); return; }
+    if (!namaInput) { 
+        alert("Mohon pilih nama Anda dari daftar!"); 
+        return; 
+    }
 
     let ditemukan = false;
     document.querySelectorAll(".orang").forEach(orang => {
         let namaItem = orang.querySelector(".nama").textContent.trim().toLowerCase();
         let posisiItem = orang.querySelector(".posisi").textContent.trim().toLowerCase();
 
-        if (namaItem.includes(namaInput) || (posisiInput && posisiItem.includes(posisiInput))) {
+        if (namaItem === namaInput || (posisiInput && posisiItem === posisiInput && namaItem.includes(namaInput))) {
             let selectStatus = orang.querySelector(".status");
             selectStatus.value = "Hadir";
             updateWarnaDropdown(selectStatus);
@@ -569,19 +572,21 @@ function prosesAbsenTamuOtomatis() {
 
     if (ditemukan) {
         updateJumlah();
-        tutupQRModal();
         if (scannedTanggalTarget) {
             tanggalInput.value = scannedTanggalTarget;
         }
+        tutupQRModal();
         simpanAbsensiCloudSilent();
     } else {
-        alert("Nama atau posisi tidak ditemukan dalam daftar anggota MPK.");
+        alert("Nama tidak cocok dengan daftar absensi.");
     }
 }
 
 function tutupQRModal() {
     if (html5QrCodeScanner) {
-        html5QrCodeScanner.stop().catch(err => {});
+        try {
+            html5QrCodeScanner.stop().catch(err => {});
+        } catch(e) {}
     }
     document.getElementById("qrModal").style.display = "none";
 }
