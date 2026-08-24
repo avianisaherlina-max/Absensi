@@ -87,14 +87,14 @@ select.status.opt-alpa { background-color: #fee2e2 !important; color: #991b1b !i
 button.btn-simpan { background: #2563eb; color: white; border: none; padding: 12px 22px; border-radius: 9px; font-weight: bold; cursor: pointer; }
 #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 99999; justify-content: center; align-items: center; color: white; font-size: 20px; font-weight: bold; }
 
-/* Perbaikan Modal QR Code & Layer Tombol */
+/* Styling QR Modal */
 #qrModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
 .qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 10000; margin: auto; }
 .qr-modal-content h3 { margin-bottom: 8px; color: #2563eb; }
 #qrcodeContainer { display: flex; justify-content: center; margin: 10px 0; background: white; padding: 10px; border-radius: 8px; }
 .close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; position: relative; z-index: 10005; }
 
-/* CSS Mode Gelap */
+/* Mode Gelap */
 body.dark-mode { background: #0f172a; color: #f1f5f9; }
 body.dark-mode #login-section, body.dark-mode .control, body.dark-mode .stat, body.dark-mode .daftar, body.dark-mode .catatan-container, body.dark-mode .qr-modal-content { background: #1e293b; }
 body.dark-mode .login-header h2, body.dark-mode .qr-modal-content h3 { color: #60a5fa; }
@@ -111,7 +111,7 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
 
 <div id="qrModal">
     <div class="qr-modal-content">
-        <h3 id="modalTitle">QR Code Absensi</h3>
+        <h3 id="modalTitle">Scan Barcode Kehadiran</h3>
         <p id="modalDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Arahkan kamera ke QR Code panitia.</p>
         
         <div id="qrcodeContainer"></div>
@@ -454,7 +454,9 @@ function handleTombolQR() {
     const formScanResult = document.getElementById("formScanResult");
     const modalTitle = document.getElementById("modalTitle");
     const modalDesc = document.getElementById("modalDesc");
+    const fileInput = document.getElementById("qrFileInput");
     
+    if (fileInput) fileInput.value = "";
     container.innerHTML = "";
     readerDiv.style.display = "none";
     uploadSection.style.display = "none";
@@ -497,17 +499,21 @@ function handleTombolQR() {
     }
 }
 
-function scanFileQR(event) {
+async function scanFileQR(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (!html5QrCodeScanner) {
-        html5QrCodeScanner = new Html5Qrcode("reader");
+    try {
+        if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
+            await html5QrCodeScanner.stop();
+        }
+        
+        const html5QrCodeFile = new Html5Qrcode("reader");
+        const decodedText = await html5QrCodeFile.scanFile(file, true);
+        berhasilScanQR(decodedText);
+    } catch (err) {
+        alert("QR Code tidak terdeteksi pada gambar tersebut. Pastikan gambar cukup terang dan jelas.");
     }
-
-    html5QrCodeScanner.scanFile(file, true)
-    .then(decodedText => { berhasilScanQR(decodedText); })
-    .catch(err => { alert("QR Code tidak terdeteksi pada gambar tersebut."); });
 }
 
 function berhasilScanQR(teks) {
@@ -517,7 +523,7 @@ function berhasilScanQR(teks) {
         scannedTanggalTarget = tanggalInput.value; 
     }
 
-    if (html5QrCodeScanner) {
+    if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
         html5QrCodeScanner.stop().then(() => {
             html5QrCodeScanner.clear();
             tampilkanFormHasilScan();
@@ -583,7 +589,7 @@ function prosesAbsenTamuOtomatis() {
 }
 
 function tutupQRModal() {
-    if (html5QrCodeScanner) {
+    if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
         try {
             html5QrCodeScanner.stop().catch(err => {});
         } catch(e) {}
