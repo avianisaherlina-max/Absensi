@@ -553,7 +553,8 @@ function pilihNamaOtomatisJabatan(selectElem) {
     document.getElementById("inputPosisiAbsen").value = posisi;
 }
 
-function prosesAbsenTamuOtomatis() {
+// PERBAIKAN: Ambil data cloud terlebih dahulu agar data lama tersinkron sebelum menimpa status baru
+async function prosesAbsenTamuOtomatis() {
     const selectNama = document.getElementById("inputNamaAbsen");
     const namaInput = selectNama.value.trim().toLowerCase();
     const posisiInput = document.getElementById("inputPosisiAbsen").value.trim().toLowerCase();
@@ -563,28 +564,49 @@ function prosesAbsenTamuOtomatis() {
         return; 
     }
 
-    let ditemukan = false;
-    document.querySelectorAll(".orang").forEach(orang => {
-        let namaItem = orang.querySelector(".nama").textContent.trim().toLowerCase();
-        let posisiItem = orang.querySelector(".posisi").textContent.trim().toLowerCase();
+    const tglTarget = scannedTanggalTarget || tanggalInput.value;
+    tanggalInput.value = tglTarget;
+    
+    loadingOverlay.style.display = "flex";
 
-        if (namaItem === namaInput || (posisiInput && posisiItem === posisiInput && namaItem.includes(namaInput))) {
-            let selectStatus = orang.querySelector(".status");
-            selectStatus.value = "Hadir";
-            updateWarnaDropdown(selectStatus);
-            ditemukan = true;
-        }
-    });
+    try {
+        // Fetch data absensi terbaru dari tanggal target
+        const response = await fetch(`${WEB_APP_URL}?tanggal=${tglTarget}`);
+        const data = await response.json();
 
-    if (ditemukan) {
-        updateJumlah();
-        if (scannedTanggalTarget) {
-            tanggalInput.value = scannedTanggalTarget;
+        const semuaStatus = document.querySelectorAll(".status");
+        if (data.absen && data.absen.length > 0) {
+            semuaStatus.forEach((status, idx) => {
+                status.value = data.absen[idx] && data.absen[idx].status ? data.absen[idx].status : "";
+                updateWarnaDropdown(status);
+            });
         }
-        tutupQRModal();
-        simpanAbsensiCloudSilent();
-    } else {
-        alert("Nama tidak cocok dengan daftar absensi.");
+
+        // Tandai orang yang sedang melakukan scan sebagai "Hadir"
+        let ditemukan = false;
+        document.querySelectorAll(".orang").forEach(orang => {
+            let namaItem = orang.querySelector(".nama").textContent.trim().toLowerCase();
+            let posisiItem = orang.querySelector(".posisi").textContent.trim().toLowerCase();
+
+            if (namaItem === namaInput || (posisiInput && posisiItem === posisiInput && namaItem.includes(namaInput))) {
+                let selectStatus = orang.querySelector(".status");
+                selectStatus.value = "Hadir";
+                updateWarnaDropdown(selectStatus);
+                ditemukan = true;
+            }
+        });
+
+        if (ditemukan) {
+            updateJumlah();
+            tutupQRModal();
+            simpanAbsensiCloudSilent();
+        } else {
+            loadingOverlay.style.display = "none";
+            alert("Nama tidak cocok dengan daftar absensi.");
+        }
+    } catch (err) {
+        loadingOverlay.style.display = "none";
+        alert("Gagal menyinkronkan data dengan cloud. Coba lagi.");
     }
 }
 
@@ -660,7 +682,6 @@ function simpanAbsensiCloud() {
 }
 
 function simpanAbsensiCloudSilent() {
-    loadingOverlay.style.display = "flex";
     const listAbsen = [];
     document.querySelectorAll(".status").forEach(status => {
         const orang = status.closest(".orang");
@@ -681,7 +702,7 @@ function simpanAbsensiCloudSilent() {
     })
     .then(() => {
         loadingOverlay.style.display = "none";
-        alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Google Drive! ✅");
+        alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Cloud! ✅");
         muatDataCloud(); 
     })
     .catch(err => {
