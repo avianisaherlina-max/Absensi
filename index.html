@@ -47,11 +47,16 @@ body { font-family: Arial, sans-serif; background: #f3f6fa; color: #1f2937; padd
 .tab-btn.aktif { background: #2563eb; color: white; }
 .control { background: white; padding: 18px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
 .tanggal-wrapper { display: flex; flex-direction: column; gap: 6px; }
-.tanggal-input-group { display: flex; align-items: center; gap: 10px; }
+.tanggal-input-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 input[type="date"] { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #1f2937; }
 .status-rapat-select { padding: 9px 12px; border-radius: 8px; border: 1px solid #d1d5db; font-weight: bold; background: #f9fafb; color: #1f2937; cursor: pointer; }
-.qr-btn { padding: 9px 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-.qr-btn:hover { background: #059669; }
+
+.gen-qr-btn { padding: 9px 14px; background: #8b5cf6; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.gen-qr-btn:hover { background: #7c3aed; }
+
+.scan-qr-btn { padding: 9px 14px; background: #10b981; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.scan-qr-btn:hover { background: #059669; }
+
 .info-rapat-badge { background: #e0e7ff; color: #3730a3; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
 .info-rapat-badge.ada-rapat { background: #dcfce7; color: #166534; }
 .info-rapat-badge span { background: #4f46e5; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; text-transform: uppercase; }
@@ -89,9 +94,9 @@ button.btn-simpan { background: #2563eb; color: white; border: none; padding: 12
 
 /* Styling QR Modal */
 #qrModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
-.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 400px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 10000; margin: auto; }
+.qr-modal-content { background: white; padding: 20px; border-radius: 15px; text-align: center; max-width: 420px; width: 100%; box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 10000; margin: auto; }
 .qr-modal-content h3 { margin-bottom: 8px; color: #2563eb; }
-#qrcodeContainer { display: flex; justify-content: center; margin: 10px 0; background: white; padding: 10px; border-radius: 8px; }
+#qrcodeContainer { display: flex; justify-content: center; align-items: center; margin: 15px 0; background: white; padding: 15px; border-radius: 10px; border: 1px dashed #d1d5db; min-height: 200px; flex-direction: column; }
 .close-qr-btn { margin-top: 10px; background: #dc2626; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; position: relative; z-index: 10005; }
 
 /* Mode Gelap */
@@ -109,19 +114,45 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
 
 <div id="loadingOverlay">Menyimpan/Memuat Data Cloud... ⏳</div>
 
+<!-- Modal QR Code -->
 <div id="qrModal">
     <div class="qr-modal-content">
-        <h3 id="modalTitle">Scan Barcode Kehadiran</h3>
-        <p id="modalDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 8px;">Arahkan kamera ke QR Code panitia.</p>
+        <h3 id="modalTitle">Scan QR Code</h3>
+        <p id="modalDesc" style="font-size: 13px; color: #6b7280; margin-bottom: 12px;">Fitur QR MPK</p>
         
+        <!-- Section 1: Generate QR Anggota (Sisi Admin) -->
+        <div id="sectionGenerateQR" style="display: none;">
+            <label style="font-size: 13px; font-weight: bold; display: block; text-align: left; margin-bottom: 6px;">Pilih Nama Anggota:</label>
+            <select id="selectAnggotaQR" class="form-control-login" onchange="buatQRUntukAnggota(this.value)" style="margin-bottom: 12px;">
+                <option value="" disabled selected>-- Pilih Anggota MPK --</option>
+                <option value="Giyas Nabil Qurisqi">Giyas Nabil Qurisqi (Ketua)</option>
+                <option value="Mutiara Khoirunnisa">Mutiara Khoirunnisa (Wakil Ketua)</option>
+                <option value="Alifia Nabila Putri">Alifia Nabila Putri (Sekretaris 1)</option>
+                <option value="Aisyah Firdasari">Aisyah Firdasari (Sekretaris 2)</option>
+                <option value="Gina Qolbiyatul Latifah">Gina Qolbiyatul Latifah (Bendahara)</option>
+                <option value="M. Andra Ary Cesanov">M. Andra Ary Cesanov (Komisi 1)</option>
+                <option value="Andika Dwi Kuncoro">Andika Dwi Kuncoro (Komisi 1)</option>
+                <option value="Yoga Aditya Pratama">Yoga Aditya Pratama (Komisi 1)</option>
+                <option value="Fahrel">Fahrel (Komisi 1)</option>
+                <option value="Darrel Dewangga Arjuna">Darrel Dewangga Arjuna (Komisi 2)</option>
+                <option value="Hilal Lee Diar Sulaeman Malik">Hilal Lee Diar Sulaeman Malik (Komisi 2)</option>
+                <option value="Alfirza Nurhidayahtulloh Arrahman">Alfirza Nurhidayahtulloh Arrahman (Komisi 2)</option>
+                <option value="Cut Annisa Syarifuddin">Cut Annisa Syarifuddin (Komisi 3)</option>
+                <option value="Muhamad Rizik">Muhamad Rizik (Komisi 3)</option>
+                <option value="Aisy Galuh Khaerunnisa Putri">Aisy Galuh Khaerunnisa Putri (Komisi 3)</option>
+            </select>
+        </div>
+
         <div id="qrcodeContainer"></div>
         <div id="reader" style="width: 100%; display: none; margin-bottom: 8px;"></div>
 
+        <!-- Upload File QR -->
         <div id="uploadScanSection" style="display: none; margin-bottom: 8px; text-align: left;">
             <label style="font-size: 12px; font-weight: bold; color: #4b5563; display: block; margin-bottom: 3px;">Atau Upload Screenshot QR Code:</label>
             <input type="file" id="qrFileInput" accept="image/*" onchange="scanFileQR(event)" style="font-size: 12px; width: 100%; position: relative; z-index: 10005;">
         </div>
-        
+
+        <!-- Form Khusus Tamu / Hasil Scan -->
         <div id="formScanResult" style="display: none; text-align: left; margin-top: 5px; position: relative; z-index: 10005;">
             <div style="font-size: 13px; color: #16a34a; font-weight: bold; margin-bottom: 6px;" id="infoScanStatusText">✅ Scan Berhasil! Pilih nama Anda:</div>
             <div style="margin-bottom: 6px;">
@@ -202,7 +233,10 @@ body.dark-mode .dark-mode-btn { background: #334155; color: #e2e8f0; border: non
                         <option value="tidak">Tidak Ada Rapat</option>
                         <option value="ada">Ada Rapat</option>
                     </select>
-                    <button class="qr-btn" id="btnAksiQR" onclick="handleTombolQR()" title="Generate QR Code">qr</button>
+                    
+                    <!-- Tombol Kontrol QR (Disesuaikan berdasarkan Login) -->
+                    <button class="gen-qr-btn" id="btnGenQR" onclick="bukaModalGenerateQR()" title="Buat QR Code Anggota">🔲 Generate QR</button>
+                    <button class="scan-qr-btn" id="btnScanQR" onclick="bukaModalScanQR()" title="Scan QR Code Kehadiran">📷 Scan QR</button>
                 </div>
             </div>
 
@@ -341,17 +375,20 @@ if (localStorage.getItem("mpkDarkMode") === "enabled") {
 function terapkanHakAksesUI() {
     const role = sessionStorage.getItem("userRole");
     const btnTabCatatan = document.getElementById("btnTabCatatan");
-    const btnAksiQR = document.getElementById("btnAksiQR");
+    const btnGenQR = document.getElementById("btnGenQR");
+    const btnScanQR = document.getElementById("btnScanQR");
     const containerSimpanAbsen = document.getElementById("containerBtnSimpanAbsen");
 
     if (role === "tamu") {
         if (btnTabCatatan) btnTabCatatan.style.display = "none";
-        if (btnAksiQR) { btnAksiQR.textContent = "Scan"; btnAksiQR.title = "Scan Barcode Kehadiran"; }
+        if (btnGenQR) btnGenQR.style.display = "none"; 
+        if (btnScanQR) { btnScanQR.style.display = "flex"; btnScanQR.textContent = "📷 Scan Barcode"; }
         document.querySelectorAll(".status").forEach(s => s.disabled = true);
         if (containerSimpanAbsen) containerSimpanAbsen.style.display = "none";
     } else {
         if (btnTabCatatan) btnTabCatatan.style.display = "block";
-        if (btnAksiQR) { btnAksiQR.textContent = "qr"; btnAksiQR.title = "Generate QR Code Absensi Tamu"; }
+        if (btnGenQR) btnGenQR.style.display = "flex";
+        if (btnScanQR) { btnScanQR.style.display = "flex"; btnScanQR.textContent = "📷 Scan QR"; }
         document.querySelectorAll(".status").forEach(s => s.disabled = false);
         if (containerSimpanAbsen) containerSimpanAbsen.style.display = "flex";
     }
@@ -445,58 +482,98 @@ function updateTampilanJudulLive() {
     }
 }
 
-function handleTombolQR() {
+/* --- FITUR GENERATE QR ANGGOTA --- */
+function bukaModalGenerateQR() {
+    const modal = document.getElementById("qrModal");
+    const container = document.getElementById("qrcodeContainer");
+    const readerDiv = document.getElementById("reader");
+    const uploadSection = document.getElementById("uploadScanSection");
+    const formScanResult = document.getElementById("formScanResult");
+    const sectionGen = document.getElementById("sectionGenerateQR");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDesc = document.getElementById("modalDesc");
+    const selectAnggota = document.getElementById("selectAnggotaQR");
+
+    container.innerHTML = "<p style='color:#9ca3af; font-size:13px;'>Pilih anggota di atas untuk menampilkan QR Code</p>";
+    readerDiv.style.display = "none";
+    uploadSection.style.display = "none";
+    formScanResult.style.display = "none";
+    selectAnggota.value = "";
+
+    modalTitle.textContent = "🔲 Generate QR Code Anggota";
+    modalDesc.textContent = "Pilih anggota untuk membuat kode QR identitas absensi unik.";
+    sectionGen.style.display = "block";
+    modal.style.display = "flex";
+}
+
+function buatQRUntukAnggota(namaAnggota) {
+    if (!namaAnggota) return;
+    const container = document.getElementById("qrcodeContainer");
+    container.innerHTML = "";
+
+    // Payload QR berisi Nama unik anggota
+    let payloadQR = "MPK-ANGGOTA:" + namaAnggota;
+
+    new QRCode(container, {
+        text: payloadQR,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+
+    const infoTeks = document.createElement("p");
+    infoTeks.style.marginTop = "10px";
+    infoTeks.style.fontWeight = "bold";
+    infoTeks.style.color = "#2563eb";
+    infoTeks.style.fontSize = "14px";
+    infoTeks.textContent = namaAnggota;
+    container.appendChild(infoTeks);
+}
+
+/* --- FITUR SCAN QR ANGGOTA / TAMU --- */
+function bukaModalScanQR() {
     const role = sessionStorage.getItem("userRole");
     const modal = document.getElementById("qrModal");
     const container = document.getElementById("qrcodeContainer");
     const readerDiv = document.getElementById("reader");
     const uploadSection = document.getElementById("uploadScanSection");
     const formScanResult = document.getElementById("formScanResult");
+    const sectionGen = document.getElementById("sectionGenerateQR");
     const modalTitle = document.getElementById("modalTitle");
     const modalDesc = document.getElementById("modalDesc");
     const fileInput = document.getElementById("qrFileInput");
-    
+
     if (fileInput) fileInput.value = "";
     container.innerHTML = "";
-    readerDiv.style.display = "none";
-    uploadSection.style.display = "none";
+    sectionGen.style.display = "none";
     formScanResult.style.display = "none";
+    readerDiv.style.display = "block";
+    uploadSection.style.display = "block";
 
     if (role === "tamu") {
-        modalTitle.textContent = "Scan Barcode Kehadiran";
-        modalDesc.textContent = "Arahkan kamera ke QR Code panitia.";
-        readerDiv.style.display = "block";
-        uploadSection.style.display = "block";
-        modal.style.display = "flex";
-
-        if (!html5QrCodeScanner) {
-            html5QrCodeScanner = new Html5Qrcode("reader");
-        }
-        
-        html5QrCodeScanner.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 220, height: 220 } },
-            (decodedText) => { berhasilScanQR(decodedText); },
-            (errorMessage) => {}
-        ).catch(err => {
-            modalDesc.textContent = "Kamera gagal dibuka. Silakan gunakan fitur Upload File di bawah.";
-        });
-
+        modalTitle.textContent = "📷 Scan QR Code Absensi";
+        modalDesc.textContent = "Arahkan kamera ke QR Code milik panitia MPK.";
     } else {
-        modalTitle.textContent = "QR Code Absensi Tamu";
-        modalDesc.textContent = "Tanggal Agenda: " + tanggalInput.value;
-        
-        let teksQR = "MPK-HADIR-" + tanggalInput.value;
-        new QRCode(container, {
-            text: teksQR,
-            width: 220,
-            height: 220,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.M
-        });
-        modal.style.display = "flex";
+        modalTitle.textContent = "📷 Scan QR Code Anggota";
+        modalDesc.textContent = "Arahkan kamera ke QR Code milik Anggota untuk mencatat kehadiran.";
     }
+
+    modal.style.display = "flex";
+
+    if (!html5QrCodeScanner) {
+        html5QrCodeScanner = new Html5Qrcode("reader");
+    }
+
+    html5QrCodeScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        (decodedText) => { berhasilScanQR(decodedText); },
+        (errorMessage) => {}
+    ).catch(err => {
+        modalDesc.textContent = "Kamera gagal dibuka. Silakan gunakan opsi Upload File di bawah.";
+    });
 }
 
 async function scanFileQR(event) {
@@ -512,25 +589,65 @@ async function scanFileQR(event) {
         const decodedText = await html5QrCodeFile.scanFile(file, true);
         berhasilScanQR(decodedText);
     } catch (err) {
-        alert("QR Code tidak terdeteksi pada gambar tersebut. Pastikan gambar cukup terang dan jelas.");
+        alert("QR Code tidak terdeteksi pada gambar. Pastikan gambar cukup jelas.");
     }
 }
 
 function berhasilScanQR(teks) {
-    if (teks.startsWith("MPK-HADIR-")) {
-        scannedTanggalTarget = teks.replace("MPK-HADIR-", "").trim();
-    } else {
-        scannedTanggalTarget = tanggalInput.value; 
-    }
+    const role = sessionStorage.getItem("userRole");
 
     if (html5QrCodeScanner && html5QrCodeScanner.isScanning) {
         html5QrCodeScanner.stop().then(() => {
             html5QrCodeScanner.clear();
-            tampilkanFormHasilScan();
+            prosesHasilScanFormat(teks, role);
         }).catch(err => {
-            tampilkanFormHasilScan();
+            prosesHasilScanFormat(teks, role);
         });
     } else {
+        prosesHasilScanFormat(teks, role);
+    }
+}
+
+function prosesHasilScanFormat(teks, role) {
+    if (role === "admin" || role !== "tamu") {
+        // PERIKSA SISI PETUGAS INTI (Scanning QR Milik Anggota)
+        let namaAnggotaDecoded = "";
+        if (teks.startsWith("MPK-ANGGOTA:")) {
+            namaAnggotaDecoded = teks.replace("MPK-ANGGOTA:", "").trim();
+        } else {
+            namaAnggotaDecoded = teks.trim();
+        }
+
+        // Cari dan tandai langsung nama anggota
+        let ditemukan = false;
+        document.querySelectorAll(".orang").forEach(orang => {
+            let namaItem = orang.querySelector(".nama").textContent.trim();
+
+            if (namaItem.toLowerCase() === namaAnggotaDecoded.toLowerCase()) {
+                let selectStatus = orang.querySelector(".status");
+                selectStatus.value = "Hadir";
+                updateWarnaDropdown(selectStatus);
+                ditemukan = true;
+            }
+        });
+
+        if (ditemukan) {
+            updateJumlah();
+            tutupQRModal();
+            simpanAbsensiCloudSilent();
+            alert(`✅ BERHASIL: ${namaAnggotaDecoded} dicatat HADIR!`);
+        } else {
+            alert(`⚠️ Gagal: Nama "${namaAnggotaDecoded}" tidak ditemukan dalam daftar anggota MPK.`);
+            tutupQRModal();
+        }
+
+    } else {
+        // PERIKSA SISI TAMU
+        if (teks.startsWith("MPK-HADIR-")) {
+            scannedTanggalTarget = teks.replace("MPK-HADIR-", "").trim();
+        } else {
+            scannedTanggalTarget = tanggalInput.value; 
+        }
         tampilkanFormHasilScan();
     }
 }
@@ -553,7 +670,6 @@ function pilihNamaOtomatisJabatan(selectElem) {
     document.getElementById("inputPosisiAbsen").value = posisi;
 }
 
-// PERBAIKAN: Ambil data cloud terlebih dahulu agar data lama tersinkron sebelum menimpa status baru
 async function prosesAbsenTamuOtomatis() {
     const selectNama = document.getElementById("inputNamaAbsen");
     const namaInput = selectNama.value.trim().toLowerCase();
@@ -570,7 +686,6 @@ async function prosesAbsenTamuOtomatis() {
     loadingOverlay.style.display = "flex";
 
     try {
-        // Fetch data absensi terbaru dari tanggal target
         const response = await fetch(`${WEB_APP_URL}?tanggal=${tglTarget}`);
         const data = await response.json();
 
@@ -582,7 +697,6 @@ async function prosesAbsenTamuOtomatis() {
             });
         }
 
-        // Tandai orang yang sedang melakukan scan sebagai "Hadir"
         let ditemukan = false;
         document.querySelectorAll(".orang").forEach(orang => {
             let namaItem = orang.querySelector(".nama").textContent.trim().toLowerCase();
@@ -702,7 +816,6 @@ function simpanAbsensiCloudSilent() {
     })
     .then(() => {
         loadingOverlay.style.display = "none";
-        alert("Absensi berhasil dicatat untuk tanggal " + tanggalInput.value + " dan tersimpan otomatis ke Cloud! ✅");
         muatDataCloud(); 
     })
     .catch(err => {
